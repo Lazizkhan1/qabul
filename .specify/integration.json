@@ -2,14 +2,29 @@
   "version": "0.8.5",
   "integration_state_schema": 1,
   "installed_integrations": [
+    "gemini",
+    "codex",
+    "junie",
     "copilot"
   ],
   "integration_settings": {
+    "gemini": {
+      "script": "sh",
+      "invoke_separator": "."
+    },
+    "codex": {
+      "script": "sh",
+      "invoke_separator": "-"
+    },
+    "junie": {
+      "script": "sh",
+      "invoke_separator": "."
+    },
     "copilot": {
       "script": "sh",
       "invoke_separator": "."
     }
   },
-  "integration": "copilot",
-  "default_integration": "copilot"
+  "integration": "codex",
+  "default_integration": "codex"
 }
