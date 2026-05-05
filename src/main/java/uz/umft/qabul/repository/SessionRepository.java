@@ -1,9 +1,9 @@
 package uz.umft.qabul.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import uz.umft.qabul.domain.entity.Session;
-import uz.umft.qabul.domain.entity.User;
-import uz.umft.qabul.domain.enums.SessionStatus;
+import uz.umft.qabul.entity.Session;
+import uz.umft.qabul.entity.User;
+import uz.umft.qabul.enums.SessionStatus;
 
 import java.util.List;
 import java.util.Optional;

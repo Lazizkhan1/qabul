@@ -1,120 +1,104 @@
-# Implementation Plan: Authentication
+# Implementation Plan: [FEATURE]
 
-**Branch**: `master` | **Date**: 2026-05-06 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-qabul-auth/spec.md`
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
 **Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
 
-Implement the authentication entry point for applicants, admins, and moderators in the existing Spring Boot service. Applicants register with phone number verification, a local-dev console OTP, password creation, and JWT access/refresh token issuance. Existing applicants log in with phone number and password. Staff log in with username and password, with the admin account upserted from environment configuration at startup.
-
-The technical approach is a layered Spring Boot web service using Spring MVC controllers, validation DTO records, service-layer orchestration, Spring Security password encoding, Auth0 JWT signing/verification, PostgreSQL persistence through Spring Data JPA, and Flyway migrations for users, sessions, and OTP verification state.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
-**Language/Version**: Java 25  
-**Primary Dependencies**: Spring Boot 4.0.6, Spring Web MVC, Spring Security, Spring Data JPA, Spring Validation, Flyway, PostgreSQL JDBC, Lombok, Auth0 Java JWT library, Spring Security crypto/bcrypt  
-**Storage**: PostgreSQL 18 with Flyway-managed schema migrations  
-**Testing**: JUnit Platform with Spring Boot integration tests, Spring Security test, Spring MVC test; project requirements explicitly prefer integration tests only  
-**Target Platform**: Linux server deployment via Docker Compose; local development through Gradle and application console OTP output  
-**Project Type**: Backend web service / REST API  
-**Performance Goals**: OTP generation and token issuance complete within 3 seconds; admin seed completes within 5 seconds of startup  
-**Constraints**: Secrets and token lifetimes come from environment configuration; passwords stored only as bcrypt hashes; JWTs include `user_id` and `role`; user IDs use UUID v7; structured errors must not expose stack traces to callers  
-**Scale/Scope**: Authentication foundation for applicant, moderator, and admin flows in the Qabul admissions system; one active OTP per phone number; session tracking for refresh tokens and pending verification
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-The current constitution file still contains placeholder principles and does not define enforceable gates. This plan therefore applies the explicit project requirements in `technical-requirements.md` as the operative quality constraints:
-
-- Layer-by-layer organization for controllers, services, repositories, DTOs, configuration, and persistence.
-- Secrets and admin bootstrap credentials must come from environment variables.
-- JWT access and refresh tokens must use Auth0 Java JWT and include `user_id` and `role`.
-- Passwords must be encrypted with bcrypt.
-- UUID v7 must be used for primary keys.
-- Flyway must own database migrations.
-- Integration tests are required; unit tests are not required by project policy.
-- API callers receive structured errors; stack traces are logged only at DEBUG level.
-
-**Initial Gate Result**: PASS. No constitution-defined violations found; project-level constraints are represented in the design.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/001-qabul-auth/
-├── plan.md
-├── research.md
-├── data-model.md
-├── quickstart.md
-├── contracts/
-│   └── openapi.yaml
-└── tasks.md             # Phase 2 output from /speckit-tasks; not created by /speckit-plan
+specs/[###-feature]/
+├── plan.md              # This file (/speckit-plan command output)
+├── research.md          # Phase 0 output (/speckit-plan command)
+├── data-model.md        # Phase 1 output (/speckit-plan command)
+├── quickstart.md        # Phase 1 output (/speckit-plan command)
+├── contracts/           # Phase 1 output (/speckit-plan command)
+└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
-src/main/java/uz/umft/qabul/
-├── QabulApplication.java
-├── auth/
-│   ├── AuthController.java
-│   ├── AuthService.java
-│   ├── AdminBootstrapService.java
-│   ├── JwtTokenService.java
-│   └── dto/
-├── config/
-│   ├── SecurityConfig.java
-│   ├── AuthProperties.java
-│   └── JwtAuthenticationFilter.java
-├── domain/
-│   ├── entity/
-│   │   ├── User.java
-│   │   ├── Session.java
-│   │   └── OtpChallenge.java
-│   └── enums/
-│       ├── Lang.java
-│       ├── Role.java
-│       └── SessionStatus.java
-├── repository/
-│   ├── UserRepository.java
-│   ├── SessionRepository.java
-│   └── OtpChallengeRepository.java
-└── web/
-    └── error/
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
-src/main/resources/
-├── application.yaml
-└── db/migration/
-    └── V001__auth_schema.sql
+tests/
+├── contract/
+├── integration/
+└── unit/
 
-src/test/java/uz/umft/qabul/
-├── auth/
-│   └── AuthFlowIntegrationTest.java
-└── QabulApplicationTests.java
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Use the existing single Spring Boot application layout and add feature-oriented `auth` code plus shared `config`, `repository`, `domain`, and `web/error` packages. Keep DTOs as Java records under `auth/dto` per project requirements.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
-No constitution violations require complexity justification.
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
-## Phase 0: Research
-
-Completed in [research.md](./research.md). All technical context questions were resolved from the feature spec, repository stack, and project technical requirements.
-
-## Phase 1: Design & Contracts
-
-Completed artifacts:
-
-- [data-model.md](./data-model.md)
-- [contracts/openapi.yaml](./contracts/openapi.yaml)
-- [quickstart.md](./quickstart.md)
-
-### Post-Design Constitution Check
-
-**Post-Design Gate Result**: PASS. The design keeps the service layered, persists auth state in PostgreSQL through Flyway/JPA, uses bcrypt and JWT as required, exposes structured REST contracts, and scopes tests to integration coverage for the full authentication flows.
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

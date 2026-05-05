@@ -14,7 +14,7 @@ public record AuthProperties(
         @NotNull Duration accessTokenTtl,
         @NotNull Duration refreshTokenTtl,
         @NotNull Duration otpTtl,
-        @NotBlank String adminUsername,
+        @NotBlank String adminPhone,
         @NotBlank String adminPassword
 ) {
 }

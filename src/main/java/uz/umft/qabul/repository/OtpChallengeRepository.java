@@ -1,8 +1,8 @@
 package uz.umft.qabul.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import uz.umft.qabul.domain.entity.OtpChallenge;
-import uz.umft.qabul.domain.enums.OtpChallengeStatus;
+import uz.umft.qabul.entity.OtpChallenge;
+import uz.umft.qabul.enums.OtpChallengeStatus;
 
 import java.util.List;
 import java.util.Optional;

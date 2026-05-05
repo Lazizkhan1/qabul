@@ -16,5 +16,5 @@ qabul:
     access-token-ttl: PT15M
     refresh-token-ttl: P7D
     otp-ttl: PT5M
-    admin-username: admin
+    admin-phone: 998900000001
     admin-password: admin-password
