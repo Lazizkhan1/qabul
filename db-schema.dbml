@@ -1,0 +1,193 @@
+//dbdiagram.io style
+
+Table user {
+  id uuid pk
+  phone_number varchar(20)  [unique, not null]
+  password_hash varchar
+  type user_type            [not null]
+  language lang
+  created_at timestamp
+}
+
+Table session {
+  id uuid pk
+  user_agent varchar
+  user_id uuid [ref:> user.id]
+  token text
+  status session_status
+  expired_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table application {
+  id uuid pk
+  user_id uuid              [ref:> user.id]
+  status application_status
+  additional_phone varchar
+  jshshir varchar
+  passport_series varchar
+  birth_date date
+  firstname varchar         [note: 'Ism']
+  lastname varchar          [note: 'Familiya']
+  middlename varchar        [note: 'Sharif']
+  gender CHAR(1)            [note: 'M/F']
+  disability int            [note: '0, 1, 2, 3', default: 0]
+  district_id int           [ref:> district.id]
+  address varchar           [not null]
+  school_year int           [ref:> school_year.id]
+  tuition_id uuid           [ref:> tuition.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table country {
+  id int pk
+  title varchar [not null]
+}
+
+Table region {
+  id int pk
+  title varchar [not null]
+  country_id int [ref:> country.id]
+}
+
+Table district {
+  id int pk
+  title varchar
+  region_id int  [ref:> region.id]
+}
+
+Table school_year {
+  id int pk
+  title varchar            [note: '2026-2027']
+}
+
+Table major {
+  id int pk
+  title varchar
+}
+
+
+Table major_type {
+  id int pk
+  type varchar             [note: 'Kunduzgi, Kechgi, Online']
+}
+
+Table major_lang {
+  id int pk
+  lang varchar             [note: "O'zbek, Rus, Ingliz"]
+}
+
+Table subject {
+  id int pk
+  title varchar            [note: 'Matematika, Ingliz tili, Tarix']
+}
+
+Table cert_category {
+  id int pk
+  title varchar [not null]
+  type int [note: '1 national, 2 language', not null]
+}
+
+Table cert {
+  id uuid pk
+  cert_number varchar [not null]
+  score double [not null]
+  file_url varchar [not null]
+  application_id uuid [ref:> application.id]
+  category_id int [ref:> cert_category.id]
+}
+
+Table bachelor_cert {
+  id uuid pk
+  user_id uuid             [ref:> user.id]
+  cert_id varchar          [not null]
+  university varchar       [not null]
+  major varchar            [not null]
+  gpa double
+}
+
+Table tuition {
+  id uuid pk
+  major_id int             [ref:> major.id, not null]
+  subject_id int           [ref:> subject.id, not null]
+  major_type_id int        [ref:> major_type.id, not null]
+  major_lang_id int        [ref:> major_lang.id, not null]
+  degree degree            [note: 'Bakalavr, Magistratira', not null]
+  duration_months int      [note: '48, 24', not null]
+  amount bigint            [note: '18,000,000']
+
+  indexes {
+    (major_id, subject_id, major_type_id, major_lang_id, degree) [unique]
+  }
+}
+
+Table exam {
+  id uuid pk
+  application_id uuid      [ref:> application.id]
+  status exam_status
+  duration int
+  score double
+  completed_at timestamp
+}
+
+Table contract {
+  id uuid pk
+  contract_url varchar
+  exam_id uuid [ref:> exam.id]
+  scale double // exam score more than 56.4 1.0, less until 40 1.5
+  created_at timestamp
+}
+
+
+Table exam_question {
+  id int pk
+  exam_id uuid             [ref:> exam.id]
+  question_text text
+  point double
+  subject_id int           [ref:> subject.id]
+}
+
+Table exam_answer {
+  id int pk
+  question_id int [ref:> exam_question.id]
+  is_correct bool
+  answer_text text
+}
+
+Enum lang {
+  uz
+  ru
+  en
+}
+
+Enum session_status {
+  ACTIVE
+  PENDING_VERIFICATION
+}
+
+Enum degree {
+  BACHELOR
+  MASTER
+}
+
+Enum application_status {
+  PENDING
+  IN_REVIEW
+  ACCEPTED
+  CANCELED
+}
+
+Enum exam_status {
+  PENDING
+  ONGOING
+  PASSED
+  FAILED
+}
+
+Enum user_type {
+  ADMIN
+  MODERATOR
+  APPLICANT
+}
