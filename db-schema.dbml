@@ -23,6 +23,7 @@ Table session {
 Table application {
   id uuid pk
   user_id uuid              [ref:> user.id]
+  degree degree            [note: 'Bakalavr, Magistratira', not null] 
   status application_status
   additional_phone varchar
   jshshir varchar
@@ -33,34 +34,16 @@ Table application {
   middlename varchar        [note: 'Sharif']
   gender CHAR(1)            [note: 'M/F']
   disability int            [note: '0, 1, 2, 3', default: 0]
-  district_id int           [ref:> district.id]
   address varchar           [not null]
-  school_year int           [ref:> school_year.id]
   tuition_id uuid           [ref:> tuition.id]
   created_at timestamp
   updated_at timestamp
 }
 
-Table country {
-  id int pk
-  title varchar [not null]
-}
-
-Table region {
-  id int pk
-  title varchar [not null]
-  country_id int [ref:> country.id]
-}
-
-Table district {
-  id int pk
-  title varchar
-  region_id int  [ref:> region.id]
-}
-
 Table school_year {
   id int pk
   title varchar            [note: '2026-2027']
+  active int               [note: '0, 1', default: 0]
 }
 
 Table major {
@@ -82,6 +65,8 @@ Table major_lang {
 Table subject {
   id int pk
   title varchar            [note: 'Matematika, Ingliz tili, Tarix']
+  exam_duration int
+  total_questions int
 }
 
 Table cert_category {
@@ -110,17 +95,14 @@ Table bachelor_cert {
 
 Table tuition {
   id uuid pk
+  major_code int           [note: '70610101']
+  school_year int          [ref:> school_year.id]
   major_id int             [ref:> major.id, not null]
   subject_id int           [ref:> subject.id, not null]
   major_type_id int        [ref:> major_type.id, not null]
   major_lang_id int        [ref:> major_lang.id, not null]
   degree degree            [note: 'Bakalavr, Magistratira', not null]
-  duration_months int      [note: '48, 24', not null]
-  amount bigint            [note: '18,000,000']
-
-  indexes {
-    (major_id, subject_id, major_type_id, major_lang_id, degree) [unique]
-  }
+  amount double            [note: '18,000,000.00']
 }
 
 Table exam {

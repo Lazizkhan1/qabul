@@ -1,0 +1,286 @@
+openapi: 3.1.0
+info:
+  title: Qabul Authentication API
+  version: 0.1.0
+  description: REST contract for applicant, admin, and moderator authentication.
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/auth/applicant/start:
+    post:
+      summary: Start applicant registration or route existing applicant to login
+      operationId: startApplicantAuth
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantPhoneRequest'
+      responses:
+        '200':
+          description: Existing applicant should continue with password login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthFlowResponse'
+              examples:
+                existing:
+                  value:
+                    flow: PASSWORD_LOGIN
+                    message: Applicant exists. Continue with password login.
+        '201':
+          description: OTP created for a new applicant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthFlowResponse'
+              examples:
+                created:
+                  value:
+                    flow: OTP_VERIFICATION
+                    message: OTP generated.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/v1/auth/applicant/verify-otp:
+    post:
+      summary: Verify applicant OTP
+      operationId: verifyApplicantOtp
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '200':
+          description: OTP verified; applicant can set password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/auth/applicant/set-password:
+    post:
+      summary: Complete first-time applicant registration
+      operationId: setApplicantPassword
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRequest'
+      responses:
+        '200':
+          description: Applicant created or completed and tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/applicant/login:
+    post:
+      summary: Log in an applicant with phone number and password
+      operationId: loginApplicant
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantLoginRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/staff/login:
+    post:
+      summary: Log in admin or moderator with username and password
+      operationId: loginStaff
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffLoginRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/refresh:
+    post:
+      summary: Exchange a valid refresh token for a new access token
+      operationId: refreshToken
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: New access token issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    BadRequest:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Invalid, expired, or missing credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Identifier already exists or conflicts with current state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ApplicantPhoneRequest:
+      type: object
+      required: [phone_number]
+      properties:
+        phone_number:
+          type: string
+          pattern: '^[0-9]{9,15}$'
+          examples: ['998901234567']
+    VerifyOtpRequest:
+      type: object
+      required: [phone_number, otp]
+      properties:
+        phone_number:
+          type: string
+          pattern: '^[0-9]{9,15}$'
+        otp:
+          type: string
+          pattern: '^[0-9]{6}$'
+    SetPasswordRequest:
+      type: object
+      required: [verification_token, password]
+      properties:
+        verification_token:
+          type: string
+        password:
+          type: string
+          minLength: 8
+    ApplicantLoginRequest:
+      type: object
+      required: [phone_number, password]
+      properties:
+        phone_number:
+          type: string
+          pattern: '^[0-9]{9,15}$'
+        password:
+          type: string
+    StaffLoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 100
+        password:
+          type: string
+    RefreshTokenRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+    AuthFlowResponse:
+      type: object
+      required: [flow, message]
+      properties:
+        flow:
+          type: string
+          enum: [OTP_VERIFICATION, PASSWORD_LOGIN]
+        message:
+          type: string
+    VerificationResponse:
+      type: object
+      required: [verification_token, expires_in]
+      properties:
+        verification_token:
+          type: string
+        expires_in:
+          type: integer
+          description: Verification token lifetime in seconds.
+    TokenResponse:
+      type: object
+      required:
+        - access_token
+        - refresh_token
+        - token_type
+        - expires_in
+        - refresh_expires_in
+        - user_id
+        - role
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+          description: Access token lifetime in seconds.
+        refresh_expires_in:
+          type: integer
+          description: Refresh token lifetime in seconds.
+        user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [ADMIN, MODERATOR, APPLICANT]
+    ErrorResponse:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code:
+          type: string
+          examples: [INVALID_CREDENTIALS]
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+        timestamp:
+          type: string
+          format: date-time

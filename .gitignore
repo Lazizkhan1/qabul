@@ -1,6 +1,14 @@
 HELP.md
 .gradle
 build/
+target/
+*.class
+*.jar
+*.log
+.env*
+logs/
+*.tmp
+*.swp
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/

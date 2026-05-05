@@ -20,16 +20,21 @@ public class User {
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
-    private Long phoneNumber;
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
 
+    @Column(unique = true)
+    private String username;
+
+    @Column(nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role type;
 
-    // default UZ
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Lang lang;
 
     @CreationTimestamp(source = SourceType.VM)
@@ -37,5 +42,11 @@ public class User {
 
     @UpdateTimestamp(source = SourceType.VM)
     private LocalDateTime updatedAt;
-}
 
+    @PrePersist
+    void prePersist() {
+        if (lang == null) {
+            lang = Lang.UZ;
+        }
+    }
+}

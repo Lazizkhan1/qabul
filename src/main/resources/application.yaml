@@ -1,3 +1,21 @@
 spring:
   application:
     name: qabul
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/qabul}
+    username: ${SPRING_DATASOURCE_USERNAME:qabul}
+    password: ${SPRING_DATASOURCE_PASSWORD:qabul}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+qabul:
+  auth:
+    jwt-secret: ${QABUL_AUTH_JWT_SECRET:change-me-in-local-dev-change-before-production}
+    access-token-ttl: ${QABUL_AUTH_ACCESS_TOKEN_TTL:PT15M}
+    refresh-token-ttl: ${QABUL_AUTH_REFRESH_TOKEN_TTL:P7D}
+    otp-ttl: ${QABUL_AUTH_OTP_TTL:PT5M}
+    admin-username: ${QABUL_AUTH_ADMIN_USERNAME:admin}
+    admin-password: ${QABUL_AUTH_ADMIN_PASSWORD:admin-password}
