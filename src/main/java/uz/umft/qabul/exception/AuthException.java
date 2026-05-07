@@ -26,4 +26,12 @@ public class AuthException extends RuntimeException {
     public static AuthException conflict(String code, String message) {
         return new AuthException(code, message, HttpStatus.CONFLICT);
     }
+
+    public static AuthException forbidden(String code, String message) {
+        return new AuthException(code, message, HttpStatus.FORBIDDEN);
+    }
+
+    public static AuthException notFound(String code, String message) {
+        return new AuthException(code, message, HttpStatus.NOT_FOUND);
+    }
 }

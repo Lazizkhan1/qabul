@@ -71,6 +71,13 @@ paths:
       summary: Complete first-time applicant registration
       operationId: setApplicantPassword
       tags: [Authentication]
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          description: Bearer verification token from OTP success.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -80,6 +87,86 @@ paths:
       responses:
         '200':
           description: Applicant created or completed and tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/applicant/reset/start:
+    post:
+      summary: Start applicant password reset by sending an OTP
+      operationId: startApplicantPasswordReset
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantPhoneRequest'
+      responses:
+        '201':
+          description: OTP created for password reset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthFlowResponse'
+              examples:
+                created:
+                  value:
+                    flow: OTP_VERIFICATION
+                    message: OTP generated.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/auth/applicant/reset/verify-otp:
+    post:
+      summary: Verify applicant OTP for password reset
+      operationId: verifyApplicantResetOtp
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '200':
+          description: OTP verified; applicant can reset password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/auth/applicant/reset/set-password:
+    post:
+      summary: Reset applicant password
+      operationId: resetApplicantPassword
+      tags: [Authentication]
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          description: Bearer reset token from OTP success.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset completed and tokens issued
           content:
             application/json:
               schema:
@@ -133,12 +220,12 @@ paths:
       summary: Exchange a valid refresh token for a new access token
       operationId: refreshToken
       tags: [Authentication]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RefreshTokenRequest'
+      parameters:
+        - in: cookie
+          name: refresh_token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: New access token issued
@@ -158,6 +245,12 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Invalid, expired, or missing credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Requested resource was not found
       content:
         application/json:
           schema:
@@ -189,10 +282,8 @@ components:
           pattern: '^[0-9]{6}$'
     SetPasswordRequest:
       type: object
-      required: [verification_token, password]
+      required: [password]
       properties:
-        verification_token:
-          type: string
         password:
           type: string
           minLength: 8
@@ -214,12 +305,6 @@ components:
           minLength: 3
           maxLength: 100
         password:
-          type: string
-    RefreshTokenRequest:
-      type: object
-      required: [refresh_token]
-      properties:
-        refresh_token:
           type: string
     AuthFlowResponse:
       type: object

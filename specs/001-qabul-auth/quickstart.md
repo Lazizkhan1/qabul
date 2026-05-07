@@ -55,7 +55,8 @@ On startup, the service upserts the admin user from `QABUL_AUTH_ADMIN_USERNAME` 
    ```bash
    curl -X POST http://localhost:8080/api/v1/auth/applicant/set-password \
      -H 'Content-Type: application/json' \
-     -d '{"verification_token":"<verification-token>","password":"StrongPassword123!"}'
+     -H 'Authorization: Bearer <verification-token>' \
+     -d '{"password":"StrongPassword123!"}'
    ```
 
 ## Applicant Login
@@ -65,6 +66,35 @@ curl -X POST http://localhost:8080/api/v1/auth/applicant/login \
   -H 'Content-Type: application/json' \
   -d '{"phone_number":"998901234567","password":"StrongPassword123!"}'
 ```
+
+## Applicant Password Reset
+
+1. Request OTP:
+
+   ```bash
+   curl -X POST http://localhost:8080/api/v1/auth/applicant/reset/start \
+     -H 'Content-Type: application/json' \
+     -d '{"phone_number":"998901234567"}'
+   ```
+
+2. Read the 6-digit OTP from the local application console.
+
+3. Verify OTP:
+
+   ```bash
+   curl -X POST http://localhost:8080/api/v1/auth/applicant/reset/verify-otp \
+     -H 'Content-Type: application/json' \
+     -d '{"phone_number":"998901234567","otp":"123456"}'
+   ```
+
+4. Set a new password and receive tokens:
+
+   ```bash
+   curl -X POST http://localhost:8080/api/v1/auth/applicant/reset/set-password \
+     -H 'Content-Type: application/json' \
+     -H 'Authorization: Bearer <reset-token>' \
+     -d '{"password":"NewStrongPassword123!"}'
+   ```
 
 ## Staff Login
 
@@ -78,8 +108,7 @@ curl -X POST http://localhost:8080/api/v1/auth/staff/login \
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/auth/refresh \
-  -H 'Content-Type: application/json' \
-  -d '{"refresh_token":"<refresh-token>"}'
+  -H 'Cookie: refresh_token=<refresh-token>'
 ```
 
 ## Integration Tests

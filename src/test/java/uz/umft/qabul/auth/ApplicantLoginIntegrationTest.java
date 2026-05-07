@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import jakarta.servlet.http.Cookie;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -63,23 +64,22 @@ class ApplicantLoginIntegrationTest {
         String loginResponse = mockMvc.perform(post("/api/v1/auth/applicant/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("User-Agent", "integration-test")
-                        .content("{\"phone_number\":\"998901111111\",\"password\":\"StrongPassword123!\"}"))
+                        .content("{\"phoneNumber\":\"998901111111\",\"password\":\"StrongPassword123!\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token", notNullValue()))
-                .andExpect(jsonPath("$.refresh_token", notNullValue()))
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
+                .andExpect(jsonPath("$.refreshToken", notNullValue()))
                 .andExpect(jsonPath("$.role").value("APPLICANT"))
-                .andExpect(jsonPath("$.user_id", notNullValue()))
+                .andExpect(jsonPath("$.userId", notNullValue()))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        String refreshToken = loginResponse.replaceAll(".*\"refresh_token\":\"([^\"]+)\".*", "$1");
+        String refreshToken = loginResponse.replaceAll(".*\"refreshToken\":\"([^\"]+)\".*", "$1");
 
         mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"refresh_token\":\"" + refreshToken + "\"}"))
+                        .cookie(new Cookie("refresh_token", refreshToken)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token", notNullValue()))
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
                 .andExpect(jsonPath("$.role").value("APPLICANT"));
 
         Session session = sessionRepository.findByTokenAndStatus(refreshToken, SessionStatus.ACTIVE).orElseThrow();
@@ -87,8 +87,7 @@ class ApplicantLoginIntegrationTest {
         sessionRepository.save(session);
 
         mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"refresh_token\":\"" + refreshToken + "\"}"))
+                        .cookie(new Cookie("refresh_token", refreshToken)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("EXPIRED_REFRESH_TOKEN"));
     }
@@ -97,7 +96,7 @@ class ApplicantLoginIntegrationTest {
     void wrongApplicantPasswordIsRejected() throws Exception {
         mockMvc.perform(post("/api/v1/auth/applicant/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"998901111111\",\"password\":\"wrong-password\"}"))
+                        .content("{\"phoneNumber\":\"998901111111\",\"password\":\"wrong-password\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"));
     }
