@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  ACR_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY || 'umftqabul.azurecr.io'}}.azurecr.io
+  ACR_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io
   IMAGE_NAME: ${{ vars.AZURE_CONTAINER_IMAGE_NAME || 'umftqabul' }}
 
 jobs:
@@ -68,6 +68,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Resolve deployment image
+        id: resolve-image
+        shell: bash
+        env:
+          NEEDS_IMAGE: ${{ needs.build-and-push.outputs.image }}
+          ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        run: |
+          set -euo pipefail
+          image="${NEEDS_IMAGE:-}"
+          if [[ -z "$image" ]]; then
+            image="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}"
+          fi
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
       - name: Deploy container to Azure Container Instance
         shell: bash
         env:
@@ -78,7 +93,7 @@ jobs:
           ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
           ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
           ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
-          IMAGE: ${{ needs.build-and-push.outputs.image }}
+          IMAGE: ${{ steps.resolve-image.outputs.image }}
           CPU: 1
           MEMORY: 1.5
           PORT: 8080
