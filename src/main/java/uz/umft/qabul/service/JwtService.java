@@ -15,22 +15,44 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-public class JwtTokenService {
+public class JwtService {
 
     private static final String ISSUER = "qabul";
     private static final String TOKEN_TYPE_CLAIM = "token_type";
     private static final String ACCESS_TYPE = "access";
     private static final String REFRESH_TYPE = "refresh";
     private static final String REGISTRATION_TYPE = "registration";
+    private static final String RESET_TYPE = "password_reset";
+    private static final String DOWNLOAD_TYPE = "download";
 
     private final AuthProperties properties;
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
 
-    public JwtTokenService(AuthProperties properties) {
+    public JwtService(AuthProperties properties) {
         this.properties = properties;
         this.algorithm = Algorithm.HMAC256(properties.jwtSecret());
         this.verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
+    }
+
+    public String createDownloadToken(String fileId) {
+        Instant now = Instant.now();
+        return JWT.create()
+                .withIssuer(ISSUER)
+                .withSubject(fileId)
+                .withClaim("file_id", fileId)
+                .withClaim(TOKEN_TYPE_CLAIM, DOWNLOAD_TYPE)
+                .withIssuedAt(Date.from(now))
+                .withExpiresAt(Date.from(now.plusSeconds(300))) // 5 minutes
+                .sign(algorithm);
+    }
+
+    public String verifyDownloadToken(String token) {
+        DecodedJWT jwt = verify(token);
+        if (!DOWNLOAD_TYPE.equals(jwt.getClaim(TOKEN_TYPE_CLAIM).asString())) {
+            throw AuthException.unauthorized("INVALID_DOWNLOAD_TOKEN", "Download token is invalid");
+        }
+        return jwt.getClaim("file_id").asString();
     }
 
     public String createAccessToken(User user) {
@@ -59,13 +81,27 @@ public class JwtTokenService {
                 .sign(algorithm);
     }
 
-    public String createRegistrationToken(String phoneNumber) {
+    public String createRegistrationToken(String phoneNumber, UUID userId) {
         Instant now = Instant.now();
         return JWT.create()
                 .withIssuer(ISSUER)
                 .withSubject(phoneNumber)
+                .withClaim("user_id", userId.toString())
                 .withClaim("phone_number", phoneNumber)
                 .withClaim(TOKEN_TYPE_CLAIM, REGISTRATION_TYPE)
+                .withIssuedAt(Date.from(now))
+                .withExpiresAt(Date.from(now.plus(properties.otpTtl())))
+                .sign(algorithm);
+    }
+
+    public String createPasswordResetToken(String phoneNumber, UUID userId) {
+        Instant now = Instant.now();
+        return JWT.create()
+                .withIssuer(ISSUER)
+                .withSubject(phoneNumber)
+                .withClaim("user_id", userId.toString())
+                .withClaim("phone_number", phoneNumber)
+                .withClaim(TOKEN_TYPE_CLAIM, RESET_TYPE)
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(now.plus(properties.otpTtl())))
                 .sign(algorithm);
@@ -77,6 +113,16 @@ public class JwtTokenService {
             throw AuthException.unauthorized("INVALID_REFRESH_TOKEN", "Refresh token is invalid");
         }
         return jwt;
+    }
+
+    public DecodedJWT decodeJWT(String token, String uri) {
+        if (uri.equals("/api/v1/auth/applicant/set-password")) {
+            return verifyRegistrationToken(token);
+        } else if (uri.equals("/api/v1/auth/applicant/reset/set-password")) {
+            return verifyPasswordResetToken(token);
+        } else {
+            return verifyAccessToken(token);
+        }
     }
 
     public DecodedJWT verifyAccessToken(String token) {
@@ -91,6 +137,14 @@ public class JwtTokenService {
         DecodedJWT jwt = verify(token);
         if (!REGISTRATION_TYPE.equals(jwt.getClaim(TOKEN_TYPE_CLAIM).asString())) {
             throw AuthException.unauthorized("INVALID_VERIFICATION_TOKEN", "Verification token is invalid");
+        }
+        return jwt;
+    }
+
+    public DecodedJWT verifyPasswordResetToken(String token) {
+        DecodedJWT jwt = verify(token);
+        if (!RESET_TYPE.equals(jwt.getClaim(TOKEN_TYPE_CLAIM).asString())) {
+            throw AuthException.unauthorized("INVALID_RESET_TOKEN", "Reset token is invalid");
         }
         return jwt;
     }

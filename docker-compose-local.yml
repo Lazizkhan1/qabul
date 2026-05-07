@@ -1,0 +1,62 @@
+services:
+
+  # ─────────────────────────────────────────────────────────
+  # PostgreSQL 18
+  # ─────────────────────────────────────────────────────────
+  db:
+    image: postgres:18-alpine
+    container_name: qabul-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT:-5433}:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - qabul-net
+
+  # ─────────────────────────────────────────────────────────
+  # Spring Boot application
+  # ─────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qabul-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persist daily log files on the host so they survive container restarts
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD-SHELL",
+             "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - qabul-net
+
+volumes:
+  postgres_data:
+    name: qabul-postgres-data
+
+networks:
+  qabul-net:
+    name: qabul-network
+    driver: bridge

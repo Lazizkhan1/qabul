@@ -6,6 +6,7 @@ spring:
     password: 123
   flyway:
     enabled: true
+    validate-on-migrate: false
   jpa:
     hibernate:
       ddl-auto: validate

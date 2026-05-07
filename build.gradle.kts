@@ -3,7 +3,6 @@ plugins {
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.hibernate.orm") version "7.2.12.Final"
-    id("org.graalvm.buildtools.native") version "0.11.5"
 }
 
 group = "uz.umft"
@@ -22,6 +21,8 @@ repositories {
 
 dependencies {
     implementation("com.auth0:java-jwt:4.5.0")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.boot:spring-boot-starter-restclient")

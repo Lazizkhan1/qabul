@@ -1,11 +1,44 @@
+# Version control
 .git/
+.gitignore
+.gitattributes
+
+# Build cache / output (the Docker build re-runs Gradle)
 .gradle/
 build/
 target/
+
+# Logs
 logs/
 *.log
-.env*
+
+# Secrets — never bake into the image
+.env.prod
+.env.*
+
+# IDE metadata
 .idea/
 .vscode/
+*.iml
+*.iws
+*.ipr
+
+# Docker meta (not needed inside the image)
 Dockerfile*
+docker-compose*.yml
 .dockerignore
+
+# Agent / spec files
+.agents/
+.specify/
+.codex/
+.gemini/
+.junie/
+.serena/
+specs/
+
+# Documentation
+*.md
+*.postman_collection.json
+*.dbml
+*.json

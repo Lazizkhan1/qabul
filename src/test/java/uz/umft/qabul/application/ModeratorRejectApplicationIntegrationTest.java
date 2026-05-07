@@ -1,0 +1,30 @@
+package uz.umft.qabul.application;
+
+import org.junit.jupiter.api.Test;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+class ModeratorRejectApplicationIntegrationTest extends ApplicationIntegrationTestSupport {
+
+    @Test
+    void canceledApplicationCannotBeChangedAgain() throws Exception {
+        String payload = mockMvc.perform(submitApplicationRequest(applicant))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        String applicationId = payload.replaceAll("^\\{\"id\":\"([^\"]+)\".*", "$1");
+
+        mockMvc.perform(post("/api/v1/applications/{applicationId}/reject", applicationId)
+                        .header("Authorization", "Bearer " + accessToken(moderator)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CANCELED"));
+
+        mockMvc.perform(post("/api/v1/applications/{applicationId}/accept", applicationId)
+                        .header("Authorization", "Bearer " + accessToken(moderator)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_STATUS_TRANSITION"));
+    }
+}

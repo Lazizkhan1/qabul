@@ -55,47 +55,48 @@ class ApplicantRegistrationIntegrationTest {
 
         mockMvc.perform(post("/api/v1/auth/applicant/start")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"" + phoneNumber + "\"}"))
+                        .content("{\"phoneNumber\":\"" + phoneNumber + "\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.flow").value("OTP_VERIFICATION"));
         String firstOtp = latestOtp(output, phoneNumber);
 
         mockMvc.perform(post("/api/v1/auth/applicant/start")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"" + phoneNumber + "\"}"))
+                        .content("{\"phoneNumber\":\"" + phoneNumber + "\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.flow").value("OTP_VERIFICATION"));
         String latestOtp = latestOtp(output, phoneNumber);
 
         mockMvc.perform(post("/api/v1/auth/applicant/verify-otp")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"" + phoneNumber + "\",\"otp\":\"" + firstOtp + "\"}"))
+                        .content("{\"phoneNumber\":\"" + phoneNumber + "\",\"otp\":\"" + firstOtp + "\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_OTP"));
 
         String verificationToken = mockMvc.perform(post("/api/v1/auth/applicant/verify-otp")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"" + phoneNumber + "\",\"otp\":\"" + latestOtp + "\"}"))
+                        .content("{\"phoneNumber\":\"" + phoneNumber + "\",\"otp\":\"" + latestOtp + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.verification_token", notNullValue()))
+                .andExpect(jsonPath("$.verificationToken", notNullValue()))
                 .andReturn()
                 .getResponse()
                 .getContentAsString()
-                .replaceAll(".*\"verification_token\":\"([^\"]+)\".*", "$1");
+                .replaceAll(".*\"verificationToken\":\"([^\"]+)\".*", "$1");
 
         mockMvc.perform(post("/api/v1/auth/applicant/set-password")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + verificationToken)
                         .header("User-Agent", "integration-test")
-                        .content("{\"verification_token\":\"" + verificationToken + "\",\"password\":\"StrongPassword123!\"}"))
+                        .content("{\"password\":\"StrongPassword123!\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token", notNullValue()))
-                .andExpect(jsonPath("$.refresh_token", notNullValue()))
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
+                .andExpect(jsonPath("$.refreshToken", notNullValue()))
                 .andExpect(jsonPath("$.role").value("APPLICANT"))
-                .andExpect(jsonPath("$.user_id", notNullValue()));
+                .andExpect(jsonPath("$.userId", notNullValue()));
 
         mockMvc.perform(post("/api/v1/auth/applicant/start")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"" + phoneNumber + "\"}"))
+                        .content("{\"phoneNumber\":\"" + phoneNumber + "\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.flow").value("PASSWORD_LOGIN"));
     }

@@ -101,8 +101,9 @@ ACTIVE -> expired by time
 
 ### SetPasswordRequest
 
-- `verification_token`: required short-lived token or verification identifier from OTP success.
 - `password`: required password satisfying configured password policy.
+
+Set password requires the `Authorization: Bearer <verification-token>` header with the short-lived verification token from OTP success.
 
 ### ApplicantLoginRequest
 

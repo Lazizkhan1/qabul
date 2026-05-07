@@ -70,19 +70,19 @@ class StaffLoginIntegrationTest {
         mockMvc.perform(post("/api/v1/auth/staff/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("User-Agent", "integration-test")
-                        .content("{\"phone_number\":\"998900000001\",\"password\":\"admin-password\"}"))
+                        .content("{\"phoneNumber\":\"998900000001\",\"password\":\"admin-password\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token", notNullValue()))
-                .andExpect(jsonPath("$.refresh_token", notNullValue()))
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
+                .andExpect(jsonPath("$.refreshToken", notNullValue()))
                 .andExpect(jsonPath("$.role").value("ADMIN"));
 
         mockMvc.perform(post("/api/v1/auth/staff/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("User-Agent", "integration-test")
-                        .content("{\"phone_number\":\"998901234000\",\"password\":\"moderator-password\"}"))
+                        .content("{\"phoneNumber\":\"998901234000\",\"password\":\"moderator-password\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.access_token", notNullValue()))
-                .andExpect(jsonPath("$.refresh_token", notNullValue()))
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
+                .andExpect(jsonPath("$.refreshToken", notNullValue()))
                 .andExpect(jsonPath("$.role").value("MODERATOR"));
     }
 
@@ -90,13 +90,13 @@ class StaffLoginIntegrationTest {
     void invalidStaffCredentialsAndApplicantStaffLoginAreRejected() throws Exception {
         mockMvc.perform(post("/api/v1/auth/staff/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"998900000001\",\"password\":\"wrong-password\"}"))
+                        .content("{\"phoneNumber\":\"998900000001\",\"password\":\"wrong-password\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"));
 
         mockMvc.perform(post("/api/v1/auth/staff/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"phone_number\":\"998902222222\",\"password\":\"applicant-password\"}"))
+                        .content("{\"phoneNumber\":\"998902222222\",\"password\":\"applicant-password\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"));
     }

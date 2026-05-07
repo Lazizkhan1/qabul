@@ -5,7 +5,10 @@ target/
 *.class
 *.jar
 *.log
-.env*
+.env.prod
+!.env
+.env
+.env.local
 logs/
 *.tmp
 *.swp
