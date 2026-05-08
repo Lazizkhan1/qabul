@@ -23,15 +23,15 @@ jobs:
       - name: 'Login to ACR'
         uses: azure/docker-login@v2
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          login-server: ${{ vars.ACR_LOGIN_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
       # 4. Build and Push Image
       - name: 'Build and Push Image'
         run: |
-          docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
+          docker build . -t ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
 
       # 5. Deploy to Azure Container Instances
       - name: 'Deploy to ACI'
@@ -39,8 +39,8 @@ jobs:
         with:
           resource-group: myResourceGroup
           dns-name-label: my-unique-app-label
-          image: ${{ secrets.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
-          registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          image: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
+          registry-login-server: ${{ vars.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: ${{vars.AZURE_CONTAINER_NAME }}
