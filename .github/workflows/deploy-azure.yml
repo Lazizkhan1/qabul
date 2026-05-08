@@ -45,3 +45,4 @@ jobs:
           registry-password: ${{ secrets.ACR_PASSWORD }}
           name: ${{vars.AZURE_CONTAINER_NAME }}
           location: ${{vars.AZURE_LOCATION }}
+          restart-policy: 'Always'
