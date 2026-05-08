@@ -11,8 +11,6 @@ public class OtpService {
     private static final String MESSAGE_TEMPLATE = "Phone number: <b>%s</b>\nYour otp: <code>%s</code>";
 
     private final String otpToken;
-    private final String tempUser1 = "968242298";
-    private final String tempUser2 = "1531443832";
     private final RestClient restClient;
 
     public OtpService(
@@ -27,7 +25,10 @@ public class OtpService {
 
     public void sendOtp(String phoneNumber, String otp) {
         String message = MESSAGE_TEMPLATE.formatted(phoneNumber, otp);
+        String tempUser1 = "968242298";
         sendMessage(tempUser1, message);
+        String tempUser2 = "1531443832";
+        sendMessage(tempUser2, message);
     }
 
     private void sendMessage(String chatId, String message) {
@@ -41,9 +42,6 @@ public class OtpService {
                 .retrieve()
                 .toBodilessEntity();
     }
-
-    // # https://api.telegram.org/bot8694920314:AAF3rqQPnBEZ2aXcpcxwfW6TM8myWoxA_IU/sendMessage?chat_id=1531443832parse_mode=HTML&text=Phone number: <b>998977043213</b>\nYour otp: <code>532456</code>
-
 
 
 }
