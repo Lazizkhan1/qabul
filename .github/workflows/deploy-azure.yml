@@ -46,4 +46,6 @@ jobs:
           name: ${{vars.AZURE_CONTAINER_NAME }}
           location: ${{vars.AZURE_LOCATION }}
           ports: 80 8080
+          environment-variables: SPRING_DATASOURCE_URL=${{ vars.SPRING_DATASOURCE_URL }} SPRING_DATASOURCE_USERNAME=${{ vars.SPRING_DATASOURCE_USERNAME }} SPRING_FLYWAY_ENABLED=true
+          secure-environment-variables: SPRING_DATASOURCE_PASSWORD=${{ vars.SPRING_DATASOURCE_PASSWORD }} OTP_SERVICE_TOKEN=${{ vars.OTP_SERVICE_TOKEN }}
           restart-policy: 'Always'
