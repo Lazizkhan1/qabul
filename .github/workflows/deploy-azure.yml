@@ -42,6 +42,6 @@ jobs:
           image: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
           registry-login-server: ${{ vars.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
-          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry-password: ${{ secrets.ACR_PASSWORD }}
           name: ${{vars.AZURE_CONTAINER_NAME }}
           location: ${{vars.AZURE_LOCATION }}
