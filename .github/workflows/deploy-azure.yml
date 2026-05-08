@@ -1,155 +1,47 @@
-name: Deploy to Azure (ACR + ACI)
+name: Build and Deploy to ACI
 
 on:
   push:
     branches:
       - master
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-env:
-  ACR_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-  IMAGE_NAME: ${{ vars.AZURE_CONTAINER_IMAGE_NAME || 'umftqabul' }}
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      image: ${{ steps.image.outputs.image }}
     steps:
-      - name: Checkout
+      # 1. Checkout the code
+      - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
-      - name: Validate required configuration
-        shell: bash
-        env:
-          AZURE_CONTAINER_REGISTRY: ${{ vars.AZURE_CONTAINER_REGISTRY }}
-          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
-          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
-        run: |
-          set -euo pipefail
-          [[ -n "${AZURE_CONTAINER_REGISTRY:-}" ]] || { echo "Missing repo variable: AZURE_CONTAINER_REGISTRY"; exit 1; }
-          [[ -n "${ACR_USERNAME:-}" ]] || { echo "Missing repo secret: ACR_USERNAME"; exit 1; }
-          [[ -n "${ACR_PASSWORD:-}" ]] || { echo "Missing repo secret: ACR_PASSWORD"; exit 1; }
-
-      - name: Set image tag
-        id: image
-        run: |
-          echo "image=${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Azure Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.image.outputs.image }}
-            ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
-
-  deploy-to-aci:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Azure login
+      # 2. Login to Azure
+      - name: 'Login via Azure CLI'
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Resolve deployment image
-        id: resolve-image
-        shell: bash
-        env:
-          NEEDS_IMAGE: ${{ needs.build-and-push.outputs.image }}
-          ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+      # 3. Login to ACR
+      - name: 'Login to ACR'
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # 4. Build and Push Image
+      - name: 'Build and Push Image'
         run: |
-          set -euo pipefail
-          image="${NEEDS_IMAGE:-}"
-          if [[ -z "$image" ]]; then
-            image="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}"
-          fi
-          echo "image=$image" >> "$GITHUB_OUTPUT"
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/myapp:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/myapp:${{ github.sha }}
 
-      - name: Deploy container to Azure Container Instance
-        shell: bash
-        env:
-          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-          LOCATION: ${{ vars.AZURE_LOCATION }}
-          CONTAINER_NAME: ${{ vars.AZURE_CONTAINER_NAME }}
-          DNS_NAME_LABEL: ${{ vars.AZURE_DNS_NAME_LABEL }}
-          ACR_LOGIN_SERVER: ${{ env.ACR_LOGIN_SERVER }}
-          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
-          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
-          IMAGE: ${{ steps.resolve-image.outputs.image }}
-          CPU: 1
-          MEMORY: 1.5
-          PORT: 8080
-          ENV_VARS: ${{ secrets.ACI_ENV_VARS }}
-        run: |
-          set -euo pipefail
-
-          [[ -n "${RESOURCE_GROUP:-}" ]] || { echo "Missing repo variable: AZURE_RESOURCE_GROUP"; exit 1; }
-          [[ -n "${LOCATION:-}" ]] || { echo "Missing repo variable: AZURE_LOCATION"; exit 1; }
-          [[ -n "${CONTAINER_NAME:-}" ]] || { echo "Missing repo variable: AZURE_CONTAINER_NAME"; exit 1; }
-          [[ -n "${IMAGE:-}" ]] || { echo "Image reference is empty"; exit 1; }
-          [[ -n "${ACR_USERNAME:-}" ]] || { echo "Missing repo secret: ACR_USERNAME"; exit 1; }
-          [[ -n "${ACR_PASSWORD:-}" ]] || { echo "Missing repo secret: ACR_PASSWORD"; exit 1; }
-
-          cpu="${CPU:-1}"
-          memory="${MEMORY:-1.5}"
-          port="${PORT:-8080}"
-          dns_name_label="${DNS_NAME_LABEL:-$CONTAINER_NAME}"
-
-          if az container show --resource-group "$RESOURCE_GROUP" --name "$CONTAINER_NAME" >/dev/null 2>&1; then
-            az container delete \
-              --resource-group "$RESOURCE_GROUP" \
-              --name "$CONTAINER_NAME" \
-              --yes
-            az container wait \
-              --resource-group "$RESOURCE_GROUP" \
-              --name "$CONTAINER_NAME" \
-              --deleted
-          fi
-
-          secure_env_args=()
-          if [[ -n "${ENV_VARS:-}" ]]; then
-            while IFS= read -r line; do
-              [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
-              secure_env_args+=("$line")
-            done <<< "$ENV_VARS"
-          fi
-
-          create_cmd=(
-            az container create
-            --resource-group "$RESOURCE_GROUP"
-            --location "$LOCATION"
-            --name "$CONTAINER_NAME"
-            --image "$IMAGE"
-            --cpu "$cpu"
-            --memory "$memory"
-            --ports "$port"
-            --dns-name-label "$dns_name_label"
-            --restart-policy Always
-            --registry-login-server "$ACR_LOGIN_SERVER"
-            --registry-username "$ACR_USERNAME"
-            --registry-password "$ACR_PASSWORD"
-          )
-
-          if [[ ${#secure_env_args[@]} -gt 0 ]]; then
-            create_cmd+=(--secure-environment-variables "${secure_env_args[@]}")
-          fi
-
-          "${create_cmd[@]}"
+      # 5. Deploy to Azure Container Instances
+      - name: 'Deploy to ACI'
+        uses: 'azure/aci-deploy@v1'
+        with:
+          resource-group: myResourceGroup
+          dns-name-label: my-unique-app-label
+          image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/myapp:${{ github.sha }}
+          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          name: my-container-instance
+          location: 'eastus'
