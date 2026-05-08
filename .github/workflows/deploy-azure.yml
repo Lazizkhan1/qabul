@@ -30,8 +30,8 @@ jobs:
       # 4. Build and Push Image
       - name: 'Build and Push Image'
         run: |
-          docker build . -t ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
+          docker build . -t ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:latest
+          docker push ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:latest
 
       # 5. Deploy to Azure Container Instances
       - name: 'Deploy to ACI'
@@ -39,7 +39,7 @@ jobs:
         with:
           resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
           dns-name-label: umftqabul
-          image: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
+          image: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:latest
           registry-login-server: ${{ vars.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
           registry-password: ${{ secrets.ACR_PASSWORD }}
