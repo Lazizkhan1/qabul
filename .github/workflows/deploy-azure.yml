@@ -37,8 +37,8 @@ jobs:
       - name: 'Deploy to ACI'
         uses: azure/aci-deploy@v1
         with:
-          resource-group: myResourceGroup
-          dns-name-label: my-unique-app-label
+          resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
+          dns-name-label: umftqabul
           image: ${{ vars.ACR_LOGIN_SERVER }}/${{ vars.AZURE_CONTAINER_IMAGE_NAME }}:${{ github.sha }}
           registry-login-server: ${{ vars.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
