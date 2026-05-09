@@ -28,6 +28,10 @@ logging:
   file:
     name: logs/application.log
 
+springdoc:
+  api-docs:
+    enabled: false
+
 qabul:
   auth:
     jwt-secret: ${QABUL_AUTH_JWT_SECRET:change-me-in-local-dev-change-before-production}

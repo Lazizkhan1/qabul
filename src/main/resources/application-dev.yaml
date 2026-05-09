@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: qabul
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/qabul}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:123}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,loggers
+  endpoint:
+    health:
+      show-details: always
+    loggers:
+      enabled: true
+
+logging:
+  level:
+    uz.umft.qabul: DEBUG
+  file:
+    name: logs/application.log
+
+springdoc:
+  default-support-form-data: true
+
+qabul:
+  auth:
+    jwt-secret: ${QABUL_AUTH_JWT_SECRET:change-me-in-local-dev-change-before-production}
+    access-token-ttl: ${QABUL_AUTH_ACCESS_TOKEN_TTL:PT15M}
+    refresh-token-ttl: ${QABUL_AUTH_REFRESH_TOKEN_TTL:P7D}
+    otp-ttl: ${QABUL_AUTH_OTP_TTL:PT5M}
+    admin-phone: ${QABUL_AUTH_ADMIN_PHONE:998900000001}
+    admin-password: ${QABUL_AUTH_ADMIN_PASSWORD:admin-password}
+  otp:
+    url: ${OTP_SERVICE_URL:https://api.telegram.org}
+    token: ${OTP_SERVICE_TOKEN}
+  files:
+    base-dir: ${QABUL_FILES_BASE_DIR:storage}
+    max-size-bytes: ${QABUL_FILES_MAX_SIZE_BYTES:5242880}
+    allowed-content-types:
+      - application/pdf
+      - image/png
+      - image/jpeg
+    allowed-extensions:
+      - pdf
+      - png
+      - jpg
+      - jpeg
