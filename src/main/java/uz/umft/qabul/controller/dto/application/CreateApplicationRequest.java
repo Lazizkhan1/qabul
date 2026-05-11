@@ -19,12 +19,12 @@ public record CreateApplicationRequest(
         String additionalPhone,
         @Min(0) Integer disability,
         @NotNull UUID tuitionId,
-        @NotEmpty List<@Valid CertificateInput> certificates
+        List<@Valid CertificateInput> certificates
 ) {
     public record CertificateInput(
             @NotBlank String certNumber,
-            @NotNull Double score,
-            @NotBlank String fileUrl,
+            @NotBlank String score,
+            @NotNull UUID fileId,
             @NotNull Integer categoryId
     ) {
     }

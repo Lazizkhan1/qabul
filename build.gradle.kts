@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.graalvm.buildtools.native") version "0.11.5"
     id("org.hibernate.orm") version "7.2.12.Final"
 }
 
@@ -53,4 +54,20 @@ hibernate {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+graalvmNative {
+    binaries {
+        all {
+            // native-build-tools reads this to find native-image unless either JAVA_HOME or GRAALVM_HOME are set:
+            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/tasks/BuildNativeImageTask.java#L211
+            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/internal/NativeImageExecutableLocator.java#L89
+            //  https://github.com/graalvm/native-build-tools/issues/542
+            javaLauncher.set(javaToolchains.launcherFor {
+                // Compile with native-image from GraalVM for JDK21
+                languageVersion.set(JavaLanguageVersion.of(25))
+                vendor.set(JvmVendorSpec.GRAAL_VM)
+            }
+            )
+        }
+    }
 }

@@ -29,7 +29,7 @@ public record ApplicationResponse(
     public record CertificateResponse(
             UUID id,
             String certNumber,
-            Double score,
+            String score,
             String fileUrl,
             Integer categoryId
     ) {

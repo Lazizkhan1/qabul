@@ -16,4 +16,15 @@ public class MajorType {
 
     @Column(nullable = false)
     private String type;
+
+    @Column(nullable = false, columnDefinition = "integer default 1")
+    private Integer active;
+
+    public MajorType() {
+    }
+
+    public MajorType(String type, Integer active) {
+        this.type = type;
+        this.active = active;
+    }
 }

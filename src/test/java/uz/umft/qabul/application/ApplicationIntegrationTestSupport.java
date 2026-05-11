@@ -9,14 +9,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import uz.umft.qabul.config.FileProperties;
+import uz.umft.qabul.entity.CertificateFile;
 import uz.umft.qabul.entity.User;
 import uz.umft.qabul.enums.Lang;
 import uz.umft.qabul.enums.Role;
+import uz.umft.qabul.repository.CertCategoryRepository;
+import uz.umft.qabul.repository.CertificateFileRepository;
 import uz.umft.qabul.repository.OtpChallengeRepository;
 import uz.umft.qabul.repository.SessionRepository;
 import uz.umft.qabul.repository.UserRepository;
 import uz.umft.qabul.service.JwtService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,6 +57,15 @@ public abstract class ApplicationIntegrationTestSupport {
     @Autowired
     protected org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    protected CertificateFileRepository certificateFileRepository;
+
+    @Autowired
+    protected CertCategoryRepository certCategoryRepository;
+
+    @Autowired
+    protected FileProperties fileProperties;
+
     protected User applicant;
     protected User moderator;
     protected User admin;
@@ -67,6 +84,7 @@ public abstract class ApplicationIntegrationTestSupport {
     }
 
     protected MockHttpServletRequestBuilder submitApplicationRequest(User user) {
+        String certificateFileUrl = createUploadedCertificateFileUrl(user, 1);
         return post("/api/v1/applications")
                 .header("Authorization", "Bearer " + accessToken(user))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,15 +105,15 @@ public abstract class ApplicationIntegrationTestSupport {
                             {
                               "certNumber":"NAT-2026-0001",
                               "score":78.5,
-                              "fileUrl":"https://files.example/cert-1.pdf",
+                              "fileUrl":"%s",
                               "categoryId":1
                             }
                           ]
                         }
-                        """);
+                        """.formatted(certificateFileUrl));
     }
 
-    private User createUser(String phoneNumber, Role role) {
+    protected User createUser(String phoneNumber, Role role) {
         User user = new User();
         user.setPhoneNumber(phoneNumber);
         user.setPasswordHash(passwordEncoder.encode("StrongPassword123!"));
@@ -105,8 +123,10 @@ public abstract class ApplicationIntegrationTestSupport {
     }
 
     private void cleanup() {
+        clearStorageDirectory();
         sessionRepository.deleteAll();
         otpChallengeRepository.deleteAll();
+        jdbcTemplate.execute("delete from certificate_files");
         jdbcTemplate.execute("delete from certs");
         jdbcTemplate.execute("delete from applications");
         jdbcTemplate.execute("delete from application_settings");
@@ -119,15 +139,59 @@ public abstract class ApplicationIntegrationTestSupport {
         userRepository.deleteAll();
     }
 
+    protected String createUploadedCertificateFileUrl(User owner, Integer categoryId) {
+        UUID fileId = UUID.randomUUID();
+        String relativePath = "certificates/test-" + categoryId + "/" + owner.getId() + "/" + fileId + ".pdf";
+        Path absolutePath = Path.of(fileProperties.baseDir()).toAbsolutePath().normalize().resolve(relativePath).normalize();
+
+        try {
+            Files.createDirectories(absolutePath.getParent());
+            Files.writeString(absolutePath, "test pdf content");
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to write test certificate file", ex);
+        }
+
+        CertificateFile certificateFile = new CertificateFile();
+        certificateFile.setId(fileId);
+        certificateFile.setOwnerUser(owner);
+        certificateFile.setCategory(certCategoryRepository.getReferenceById(categoryId));
+        certificateFile.setRelativePath(relativePath);
+        certificateFile.setOriginalName("test-certificate.pdf");
+        certificateFile.setContentType("application/pdf");
+        certificateFile.setSizeBytes(absolutePath.toFile().length());
+        certificateFileRepository.save(certificateFile);
+
+        return "/api/v1/files/certificates/" + fileId;
+    }
+
+    private void clearStorageDirectory() {
+        Path storageDir = Path.of(fileProperties.baseDir()).toAbsolutePath().normalize();
+        if (!Files.exists(storageDir)) {
+            return;
+        }
+        try (var paths = Files.walk(storageDir)) {
+            paths.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException ex) {
+                            throw new IllegalStateException("Failed to delete test storage file", ex);
+                        }
+                    });
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to clean test storage directory", ex);
+        }
+    }
+
     private void seedReferenceData() {
-        jdbcTemplate.update("insert into school_year(id, title, active) values (2026, '2026-2027', 1)");
+        jdbcTemplate.update("insert into school_year(id, title, active) values (2026, '2026-2027', true)");
         jdbcTemplate.update("insert into major(id, title) values (1, 'Computer Science')");
         jdbcTemplate.update("insert into major_type(id, type) values (1, 'Kunduzgi')");
         jdbcTemplate.update("insert into major_lang(id, lang) values (1, 'UZ')");
-        jdbcTemplate.update("insert into cert_category(id, title, type) values (1, 'National cert', 1)");
+        jdbcTemplate.update("insert into cert_category(id, title, type) values (1, 'National cert', 'NATIONAL')");
         jdbcTemplate.update("""
-                insert into tuition(id, school_year, major_id, major_type_id, major_lang_id, degree, amount, active)
-                values (?, 2026, 1, 1, 1, 'BACHELOR', 18000000, 1)
+                insert into tuition(id, school_year, major_id, major_type_id, major_lang_id, degree, amount)
+                values (?, 2026, 1, 1, 1, 'BACHELOR', 18000000)
                 """, TUITION_ID);
     }
 }

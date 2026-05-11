@@ -102,7 +102,7 @@ Table tuition {
   major_type_id int        [ref:> major_type.id, not null]
   major_lang_id int        [ref:> major_lang.id, not null]
   degree degree            [note: 'Bakalavr, Magistratira', not null]
-  amount double            [note: '18,000,000.00']
+  amount bigint            [note: '18,000,000']
 }
 
 Table exam {

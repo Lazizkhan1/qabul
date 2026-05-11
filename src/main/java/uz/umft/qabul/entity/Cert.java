@@ -34,7 +34,7 @@ public class Cert {
     private String certNumber;
 
     @Column(nullable = false)
-    private Double score;
+    private String score;
 
     @Column(name = "file_url", nullable = false)
     private String fileUrl;

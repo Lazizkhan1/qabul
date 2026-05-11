@@ -30,6 +30,8 @@ logging:
 
 springdoc:
   default-support-form-data: true
+  swagger-ui:
+    query-config-enabled: false
 
 qabul:
   auth:

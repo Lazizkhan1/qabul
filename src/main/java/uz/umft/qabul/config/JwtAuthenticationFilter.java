@@ -35,11 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
+        String token = extractToken(request);
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
-                String token = authorizationHeader.substring(BEARER_PREFIX.length());
                 DecodedJWT decodedJWT = jwtTokenService.decodeJWT(token, request.getRequestURI());
                 var user = userRepository.findById(jwtTokenService.getUserId(decodedJWT))
                         .orElseThrow(() -> AuthException.unauthorized("INVALID_ACCESS_TOKEN", "Access token is invalid"));
@@ -56,5 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            return authorizationHeader.substring(BEARER_PREFIX.length());
+        }
+        return request.getParameter("token");
     }
 }

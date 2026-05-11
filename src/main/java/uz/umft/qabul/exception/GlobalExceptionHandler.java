@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
@@ -51,6 +52,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
         log.debug("AccessDeniedException: {}", ex.getMessage(), ex);
         return error(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "Access is denied", Map.of());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    ResponseEntity<ErrorResponse> handleNotFound(NoResourceFoundException ex) {
+        log.debug("NoResourceFoundException: {}", ex.getMessage(), ex);
+        return error(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", "Resource not found", Map.of());
     }
 
     @ExceptionHandler(Exception.class)

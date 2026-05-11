@@ -16,4 +16,11 @@ public class MajorLang {
 
     @Column(nullable = false)
     private String lang;
+
+    public MajorLang() {
+    }
+
+    public MajorLang(String lang) {
+        this.lang = lang;
+    }
 }

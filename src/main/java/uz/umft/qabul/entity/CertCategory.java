@@ -2,11 +2,14 @@ package uz.umft.qabul.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uz.umft.qabul.enums.CertType;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "cert_category")
 public class CertCategory {
 
@@ -18,5 +21,11 @@ public class CertCategory {
     private String title;
 
     @Column(nullable = false)
-    private Integer type;
+    @Enumerated(EnumType.STRING)
+    private CertType type;
+
+    public CertCategory(String title, CertType type) {
+        this.title = title;
+        this.type = type;
+    }
 }

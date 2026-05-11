@@ -16,4 +16,24 @@ public class Major {
 
     @Column(nullable = false)
     private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject1_id")
+    private Subject subject1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject2_id")
+    private Subject subject2;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject3_id")
+    private Subject subject3;
+
+    public Major() {
+    }
+
+    public Major(String title) {
+        this.title = title;
+    }
+
 }

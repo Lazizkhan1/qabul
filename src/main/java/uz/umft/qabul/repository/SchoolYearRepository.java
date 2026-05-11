@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface SchoolYearRepository extends JpaRepository<SchoolYear, Integer> {
     Optional<SchoolYear> findByTitle(String title);
+
+    SchoolYear getByActive(Boolean active);
 }

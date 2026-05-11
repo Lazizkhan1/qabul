@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.jdbc.core.JdbcTemplate;
 import uz.umft.qabul.entity.User;
 import uz.umft.qabul.enums.Lang;
 import uz.umft.qabul.enums.Role;
@@ -43,10 +44,17 @@ class StaffLoginIntegrationTest {
     @Autowired
     AdminBootstrapService adminBootstrapService;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void setUp() {
         sessionRepository.deleteAll();
         otpChallengeRepository.deleteAll();
+        jdbcTemplate.execute("delete from certs");
+        jdbcTemplate.execute("delete from applications");
+        jdbcTemplate.execute("delete from application_settings");
+        jdbcTemplate.execute("delete from certificate_files");
         userRepository.deleteAll();
         adminBootstrapService.upsertAdmin();
 

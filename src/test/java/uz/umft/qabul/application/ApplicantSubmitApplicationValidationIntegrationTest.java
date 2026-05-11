@@ -11,6 +11,7 @@ class ApplicantSubmitApplicationValidationIntegrationTest extends ApplicationInt
 
     @Test
     void missingRequiredFieldsReturnValidationErrors() throws Exception {
+        String fileUrl = createUploadedCertificateFileUrl(applicant, 1);
         mockMvc.perform(post("/api/v1/applications")
                         .header("Authorization", "Bearer " + accessToken(applicant))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -23,9 +24,9 @@ class ApplicantSubmitApplicationValidationIntegrationTest extends ApplicationInt
                                   "passportSeries":"AA1234567",
                                   "address":"Tashkent",
                                   "tuitionId":"11111111-1111-7111-8111-111111111111",
-                                  "certificates":[{"certNumber":"C1","score":80,"fileUrl":"https://x","categoryId":1}]
+                                  "certificates":[{"certNumber":"C1","score":80,"fileUrl":"%s","categoryId":1}]
                                 }
-                                """))
+                                """.formatted(fileUrl)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
                 .andExpect(jsonPath("$.details.firstname").exists());

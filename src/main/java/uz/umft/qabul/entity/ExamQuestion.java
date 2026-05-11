@@ -14,14 +14,14 @@ public class ExamQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id")
-    private Exam exam;
-
     @Column(name = "question_text", columnDefinition = "text")
     private String questionText;
 
     private Double point;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "major_lang_id")
+    private MajorLang majorLang;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")

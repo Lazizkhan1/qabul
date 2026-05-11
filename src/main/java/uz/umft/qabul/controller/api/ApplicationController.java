@@ -87,6 +87,19 @@ public class ApplicationController {
         return applicationService.reject(user, applicationId);
     }
 
+    @PutMapping("/{applicationId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApplicationResponse update(@PathVariable UUID applicationId, @RequestBody CreateApplicationRequest request) {
+        return applicationService.update(applicationId, request);
+    }
+
+    @DeleteMapping("/{applicationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(@PathVariable UUID applicationId) {
+        applicationService.delete(applicationId);
+    }
+
     @PatchMapping("/settings/auto-accept")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     public AutoAcceptToggleDto.Response updateAutoAccept(

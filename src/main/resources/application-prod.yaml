@@ -43,3 +43,15 @@ qabul:
   otp:
     url: ${OTP_SERVICE_URL:https://api.telegram.org}
     token: ${OTP_SERVICE_TOKEN}
+  files:
+    base-dir: ${QABUL_FILES_BASE_DIR:storage}
+    max-size-bytes: ${QABUL_FILES_MAX_SIZE_BYTES:5242880}
+    allowed-content-types:
+      - application/pdf
+      - image/png
+      - image/jpeg
+    allowed-extensions:
+      - pdf
+      - png
+      - jpg
+      - jpeg

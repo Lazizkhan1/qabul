@@ -35,6 +35,7 @@ public class ApplicationService {
     private final ApplicationSettingRepository applicationSettingRepository;
     private final ApplicationMapper applicationMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final FileService fileService;
 
     public ApplicationService(
             ApplicationRepository applicationRepository,
@@ -43,7 +44,8 @@ public class ApplicationService {
             CertCategoryRepository certCategoryRepository,
             ApplicationSettingRepository applicationSettingRepository,
             ApplicationMapper applicationMapper,
-            JdbcTemplate jdbcTemplate
+            JdbcTemplate jdbcTemplate,
+            FileService fileService
     ) {
         this.applicationRepository = applicationRepository;
         this.certRepository = certRepository;
@@ -52,6 +54,7 @@ public class ApplicationService {
         this.applicationSettingRepository = applicationSettingRepository;
         this.applicationMapper = applicationMapper;
         this.jdbcTemplate = jdbcTemplate;
+        this.fileService = fileService;
     }
 
     // --- Submission ---
@@ -64,6 +67,9 @@ public class ApplicationService {
 
         validateCertificateCategories(
                 request.certificates().stream().map(CreateApplicationRequest.CertificateInput::categoryId).toList()
+        );
+        request.certificates().forEach(certificate ->
+                fileService.validateOwnedCertificateReference(applicant, certificate.fileId(), certificate.categoryId())
         );
 
         Application application = new Application();
@@ -89,7 +95,7 @@ public class ApplicationService {
             cert.setCategory(certCategoryRepository.getReferenceById(input.categoryId()));
             cert.setCertNumber(input.certNumber());
             cert.setScore(input.score());
-            cert.setFileUrl(input.fileUrl());
+            cert.setFileUrl(input.fileId().toString());
             return cert;
         }).toList();
 
@@ -182,6 +188,28 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.CANCELED);
         Application saved = applicationRepository.save(application);
         return applicationMapper.toResponse(saved, certRepository.findByApplication_IdIn(List.of(applicationId)));
+    }
+
+    @Transactional
+    public ApplicationResponse update(UUID id, CreateApplicationRequest request) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> AuthException.notFound("APPLICATION_NOT_FOUND", "Application not found"));
+        application.setFirstname(request.firstname());
+        application.setLastname(request.lastname());
+        application.setMiddlename(request.middlename());
+        application.setBirthDate(request.birthDate());
+        application.setGender(request.gender().charAt(0));
+        application.setJshshir(request.jshshir());
+        application.setPassportSeries(request.passportSeries());
+        application.setAddress(request.address());
+        application.setAdditionalPhone(request.additionalPhone());
+        application.setDisability(request.disability());
+        return applicationMapper.toResponse(applicationRepository.save(application), certRepository.findByApplication_IdIn(List.of(id)));
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        applicationRepository.deleteById(id);
     }
 
     // --- Settings ---

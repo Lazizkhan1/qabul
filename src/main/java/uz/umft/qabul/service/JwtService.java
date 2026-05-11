@@ -35,15 +35,16 @@ public class JwtService {
         this.verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
     }
 
-    public String createDownloadToken(String fileId) {
+    public String createDownloadToken(String fileId, String userId) {
         Instant now = Instant.now();
         return JWT.create()
                 .withIssuer(ISSUER)
                 .withSubject(fileId)
                 .withClaim("file_id", fileId)
+                .withClaim("user_id", userId)
                 .withClaim(TOKEN_TYPE_CLAIM, DOWNLOAD_TYPE)
                 .withIssuedAt(Date.from(now))
-                .withExpiresAt(Date.from(now.plusSeconds(300))) // 5 minutes
+                .withExpiresAt(Date.from(now.plusSeconds(3600))) // 1 hour
                 .sign(algorithm);
     }
 
@@ -120,6 +121,13 @@ public class JwtService {
             return verifyRegistrationToken(token);
         } else if (uri.equals("/api/v1/auth/applicant/reset/set-password")) {
             return verifyPasswordResetToken(token);
+        } else if (uri.startsWith("/api/v1/files/")) {
+            DecodedJWT jwt = verify(token);
+            String type = jwt.getClaim(TOKEN_TYPE_CLAIM).asString();
+            if (DOWNLOAD_TYPE.equals(type) || ACCESS_TYPE.equals(type)) {
+                return jwt;
+            }
+            throw AuthException.unauthorized("INVALID_TOKEN", "Invalid token type for file access");
         } else {
             return verifyAccessToken(token);
         }

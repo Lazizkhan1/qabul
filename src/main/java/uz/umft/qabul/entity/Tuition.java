@@ -30,10 +30,6 @@ public class Tuition {
     private Major major;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "subject_id", nullable = false)
-    private Subject subject;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "major_type_id", nullable = false)
     private MajorType majorType;
 
@@ -46,5 +42,5 @@ public class Tuition {
     private Degree degree;
 
     @Column(nullable = false)
-    private Double amount;
+    private Long amount;
 }
