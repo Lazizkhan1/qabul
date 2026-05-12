@@ -7,44 +7,36 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
-import uz.umft.qabul.enums.ExamStatus;
+import uz.umft.qabul.enums.ExamSessionStatus;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "exams")
-public class Exam {
+@Table(name = "exam_sessions")
+public class ExamSession {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "application_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "application_id", nullable = false, unique = true)
     private Application application;
 
     @Enumerated(EnumType.STRING)
-    private ExamStatus status;
-
-    private Integer duration;
+    @Column(nullable = false)
+    private ExamSessionStatus status;
 
     private Double score;
 
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
+
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
-
-    @ManyToMany
-    @JoinTable(
-            name = "exam_subjects",
-            joinColumns = @JoinColumn(name = "exam_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private Set<Subject> subjects = new HashSet<>();
 
     @CreationTimestamp(source = SourceType.VM)
     private LocalDateTime createdAt;

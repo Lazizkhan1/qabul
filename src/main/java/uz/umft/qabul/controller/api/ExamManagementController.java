@@ -63,4 +63,11 @@ public class ExamManagementController {
     public void deleteAnswer(@PathVariable Integer id) {
         examManagementService.deleteAnswer(id);
     }
+
+    @PostMapping("/questions/import")
+    public uz.umft.qabul.dto.exam.ImportSummaryDto importQuestions(
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam("subjectId") Integer subjectId) {
+        return examManagementService.importQuestionsFromDocx(file, subjectId);
+    }
 }

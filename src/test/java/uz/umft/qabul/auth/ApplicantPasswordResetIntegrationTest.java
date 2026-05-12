@@ -1,4 +1,4 @@
-package uz.umft.qabul.service;
+package uz.umft.qabul.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.jdbc.core.JdbcTemplate;
-import uz.umft.qabul.entity.User;
 import uz.umft.qabul.entity.OtpChallenge;
+import uz.umft.qabul.entity.User;
 import uz.umft.qabul.enums.Lang;
 import uz.umft.qabul.enums.Role;
 import uz.umft.qabul.repository.OtpChallengeRepository;

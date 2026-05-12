@@ -14,29 +14,29 @@ class ApplicantSubmitApplicationFileReferenceIntegrationTest extends Application
     @Test
     void applicantCannotSubmitUsingAnotherApplicantsCertificateFile() throws Exception {
         User anotherApplicant = createUser("998901008888", Role.APPLICANT);
-        String foreignFileUrl = createUploadedCertificateFileUrl(anotherApplicant, 1);
+        String foreignFileId = createUploadedCertificateFileId(anotherApplicant, 1);
 
         mockMvc.perform(post("/api/v1/applications")
                         .header("Authorization", "Bearer " + accessToken(applicant))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(applicationPayload(foreignFileUrl)))
+                        .content(applicationPayload(foreignFileId)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.code").value("CERT_FILE_ACCESS_DENIED"));
     }
 
     @Test
     void applicantCannotSubmitWithUnknownCertificateFileReference() throws Exception {
-        String unknownFileUrl = "/api/v1/files/certificates/00000000-0000-0000-0000-000000000000";
+        String unknownFileId = "00000000-0000-0000-0000-000000000000";
 
         mockMvc.perform(post("/api/v1/applications")
                         .header("Authorization", "Bearer " + accessToken(applicant))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(applicationPayload(unknownFileUrl)))
+                        .content(applicationPayload(unknownFileId)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_CERT_FILE_REFERENCE"));
     }
 
-    private String applicationPayload(String fileUrl) {
+    private String applicationPayload(String fileId) {
         return """
                 {
                   "firstname":"Ali",
@@ -54,11 +54,11 @@ class ApplicantSubmitApplicationFileReferenceIntegrationTest extends Application
                     {
                       "certNumber":"NAT-2026-0001",
                       "score":78.5,
-                      "fileUrl":"%s",
+                      "fileId":"%s",
                       "categoryId":1
                     }
                   ]
                 }
-                """.formatted(fileUrl);
+                """.formatted(fileId);
     }
 }

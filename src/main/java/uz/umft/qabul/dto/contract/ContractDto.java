@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ContractDto {
     private UUID id;
     private String contractUrl;
-    private UUID examId;
+    private UUID examSessionId;
     private Double scale;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

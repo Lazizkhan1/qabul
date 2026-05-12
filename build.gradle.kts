@@ -31,6 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("org.apache.poi:poi-ooxml:5.5.1")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
@@ -54,6 +55,11 @@ hibernate {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Ensure tests use the correct environment by ignoring conflicting environment variables from the host
+    environment("SPRING_DATASOURCE_URL", "jdbc:postgresql://localhost:5432/qabul_test")
+    environment("SPRING_DATASOURCE_USERNAME", "postgres")
+    environment("SPRING_DATASOURCE_PASSWORD", "123")
+    environment("SPRING_PROFILES_ACTIVE", "test")
 }
 graalvmNative {
     binaries {

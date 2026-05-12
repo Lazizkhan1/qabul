@@ -19,8 +19,6 @@ management:
   endpoint:
     health:
       show-details: always
-    loggers:
-      enabled: true
 
 logging:
   level:
@@ -57,3 +55,5 @@ qabul:
       - png
       - jpg
       - jpeg
+  exam:
+    duration-minutes: ${EXAM_DURATION:60}

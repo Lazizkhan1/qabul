@@ -1,2121 +1,2764 @@
 {
-  "info": {
-    "_postman_id": "ce984acb-f134-452c-9150-b39b3c80d08a",
-    "name": "Qabul API",
-    "description": "Postman collection for Qabul Admission System API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Authentication",
-      "item": [
+    "info": {
+        "_postman_id": "ce984acb-f134-452c-9150-b39b3c80d08a",
+        "name": "Qabul API",
+        "description": "Postman collection for Qabul Admission System API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
         {
-          "name": "Applicant",
-          "item": [
-            {
-              "name": "Start Auth",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"phoneNumber\": \"998901234567\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/auth/applicant/start",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "auth", "applicant", "start"]
-                },
-                "description": "Start applicant registration or route existing applicant to login"
-              }
-            },
-            {
-              "name": "Verify OTP",
-              "event": [
+            "name": "Authentication",
+            "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.verificationToken) {",
-                      "    pm.collectionVariables.set(\"verificationToken\", jsonData.verificationToken);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"otp\": \"123456\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/auth/applicant/verify-otp",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "auth", "applicant", "verify-otp"]
-                },
-                "description": "Verify applicant OTP"
-              }
-            },
-            {
-              "name": "Set Password",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.accessToken) {",
-                      "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{verificationToken}}",
-                    "type": "text"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"password\": \"P@ssw0rd123\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/auth/applicant/set-password",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "auth", "applicant", "set-password"]
-                },
-                "description": "Complete first-time applicant registration"
-              }
-            },
-            {
-              "name": "Login",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.accessToken) {",
-                      "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"password\": \"P@ssw0rd123\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/auth/applicant/login",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "auth", "applicant", "login"]
-                },
-                "description": "Log in an applicant with phone number and password"
-              }
-            },
-            {
-              "name": "Password Reset",
-              "item": [
-                {
-                  "name": "Start Reset",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"phoneNumber\": \"998901234567\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
+                    "name": "Applicant",
+                    "item": [
+                        {
+                            "name": "Start Auth",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phoneNumber\": \"998901234567\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/auth/applicant/start",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "auth",
+                                        "applicant",
+                                        "start"
+                                    ]
+                                },
+                                "description": "Start applicant registration or route existing applicant to login"
+                            }
+                        },
+                        {
+                            "name": "Verify OTP",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.verificationToken) {",
+                                            "    pm.collectionVariables.set(\"verificationToken\", jsonData.verificationToken);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"otp\": \"123456\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/auth/applicant/verify-otp",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "auth",
+                                        "applicant",
+                                        "verify-otp"
+                                    ]
+                                },
+                                "description": "Verify applicant OTP"
+                            }
+                        },
+                        {
+                            "name": "Set Password",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.accessToken) {",
+                                            "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{verificationToken}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"password\": \"P@ssw0rd123\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/auth/applicant/set-password",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "auth",
+                                        "applicant",
+                                        "set-password"
+                                    ]
+                                },
+                                "description": "Complete first-time applicant registration"
+                            }
+                        },
+                        {
+                            "name": "Login",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.accessToken) {",
+                                            "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"password\": \"P@ssw0rd123\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/auth/applicant/login",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "auth",
+                                        "applicant",
+                                        "login"
+                                    ]
+                                },
+                                "description": "Log in an applicant with phone number and password"
+                            }
+                        },
+                        {
+                            "name": "Password Reset",
+                            "item": [
+                                {
+                                    "name": "Start Reset",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"phoneNumber\": \"998901234567\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/start",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "auth",
+                                                "applicant",
+                                                "reset",
+                                                "start"
+                                            ]
+                                        },
+                                        "description": "Start applicant password reset by sending an OTP"
+                                    }
+                                },
+                                {
+                                    "name": "Verify Reset OTP",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "var jsonData = pm.response.json();",
+                                                    "if (jsonData.verificationToken) {",
+                                                    "    pm.collectionVariables.set(\"resetToken\", jsonData.verificationToken);",
+                                                    "}"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"otp\": \"123456\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/verify-otp",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "auth",
+                                                "applicant",
+                                                "reset",
+                                                "verify-otp"
+                                            ]
+                                        },
+                                        "description": "Verify applicant OTP for password reset"
+                                    }
+                                },
+                                {
+                                    "name": "Complete Reset",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "var jsonData = pm.response.json();",
+                                                    "if (jsonData.accessToken) {",
+                                                    "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                                                    "}"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Authorization",
+                                                "value": "Bearer {{resetToken}}",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"password\": \"NewP@ssw0rd123\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/set-password",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "auth",
+                                                "applicant",
+                                                "reset",
+                                                "set-password"
+                                            ]
+                                        },
+                                        "description": "Reset applicant password"
+                                    }
+                                }
+                            ]
                         }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/start",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "auth", "applicant", "reset", "start"]
-                    },
-                    "description": "Start applicant password reset by sending an OTP"
-                  }
+                    ]
                 },
                 {
-                  "name": "Verify Reset OTP",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "var jsonData = pm.response.json();",
-                          "if (jsonData.verificationToken) {",
-                          "    pm.collectionVariables.set(\"resetToken\", jsonData.verificationToken);",
-                          "}"
+                    "name": "Staff",
+                    "item": [
+                        {
+                            "name": "Login",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.accessToken) {",
+                                            "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"phoneNumber\": \"998900000001\",\n  \"password\": \"admin-password\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/auth/staff/login",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "auth",
+                                        "staff",
+                                        "login"
+                                    ]
+                                },
+                                "description": "Log in admin or moderator with phone number and password"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Exchange a valid refresh token for a new access token"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Applications",
+            "item": [
+                {
+                    "name": "Submit Application",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.id) {",
+                                    "    pm.collectionVariables.set(\"applicationId\", jsonData.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"middlename\": \"Middle\",\n  \"birthDate\": \"2000-01-01\",\n  \"gender\": \"M\",\n  \"jshshir\": \"12345678901234\",\n  \"passportSeries\": \"AA1234567\",\n  \"address\": \"Tashkent, Uzbekistan\",\n  \"additionalPhone\": \"998901234568\",\n  \"disability\": 0,\n  \"tuitionId\": \"{{tuitionId}}\",\n  \"certificates\": []\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications"
+                            ]
+                        },
+                        "description": "Submit a new application (Applicant only)"
+                    }
+                },
+                {
+                    "name": "List Applications",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "PENDING",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "school_year",
+                                    "value": "2024",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "major_id",
+                                    "value": "1",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "degree",
+                                    "value": "BACHELOR",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "List applications with pagination and filters (Staff only)"
+                    }
+                },
+                {
+                    "name": "Get My Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "me"
+                            ]
+                        },
+                        "description": "Get current applicant's application"
+                    }
+                },
+                {
+                    "name": "Get Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "{{applicationId}}"
+                            ]
+                        },
+                        "description": "Get application details by id (Staff only)"
+                    }
+                },
+                {
+                    "name": "Accept Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}/accept",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "{{applicationId}}",
+                                "accept"
+                            ]
+                        },
+                        "description": "Accept application (Staff only)"
+                    }
+                },
+                {
+                    "name": "Reject Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}/reject",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "{{applicationId}}",
+                                "reject"
+                            ]
+                        },
+                        "description": "Reject application (Staff only)"
+                    }
+                },
+                {
+                    "name": "Update Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"middlename\": \"Middle\",\n  \"birthDate\": \"2000-01-01\",\n  \"gender\": \"M\",\n  \"jshshir\": \"12345678901234\",\n  \"passportSeries\": \"AA1234567\",\n  \"address\": \"Tashkent, Uzbekistan\",\n  \"additionalPhone\": \"998901234568\",\n  \"disability\": 0,\n  \"tuitionId\": \"{{tuitionId}}\",\n  \"certificates\": []\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "{{applicationId}}"
+                            ]
+                        },
+                        "description": "Update application (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Application",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "applications",
+                                "{{applicationId}}"
+                            ]
+                        },
+                        "description": "Delete application (Admin only)"
+                    }
+                },
+                {
+                    "name": "Settings",
+                    "item": [
+                        {
+                            "name": "Toggle Auto-Accept",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PATCH",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"enabled\": true\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/applications/settings/auto-accept",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "applications",
+                                        "settings",
+                                        "auto-accept"
+                                    ]
+                                },
+                                "description": "Toggle auto-accept for new submissions (Staff only)"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Contracts",
+            "item": [
+                {
+                    "name": "List Contracts",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/contracts",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "contracts"
+                            ]
+                        },
+                        "description": "List all contracts (Admin only)"
+                    }
+                },
+                {
+                    "name": "Create Contract",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.id) {",
+                                    "    pm.collectionVariables.set(\"contractId\", jsonData.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"examId\": \"{{examId}}\",\n  \"scale\": 1.0\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/contracts",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "contracts"
+                            ]
+                        },
+                        "description": "Create a new contract (Admin only)"
+                    }
+                },
+                {
+                    "name": "Update Contract",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"examId\": \"{{examId}}\",\n  \"scale\": 1.5\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/contracts/{{contractId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "contracts",
+                                "{{contractId}}"
+                            ]
+                        },
+                        "description": "Update contract (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Contract",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/contracts/{{contractId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "contracts",
+                                "{{contractId}}"
+                            ]
+                        },
+                        "description": "Delete contract (Admin only)"
+                    }
+                },
+                {
+                    "name": "Download Contract",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/contracts/download/{{sessionId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "contracts",
+                                "download",
+                                "{{sessionId}}"
+                            ]
+                        },
+                        "description": "Download applicant's contract as PDF (Applicant only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exams",
+            "item": [
+                {
+                    "name": "Management",
+                    "item": [
+                        {
+                            "name": "Questions",
+                            "item": [
+                                {
+                                    "name": "List Questions",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/questions",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "questions"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Create Question",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "var jsonData = pm.response.json();",
+                                                    "if (jsonData.id) {",
+                                                    "    pm.collectionVariables.set(\"questionId\", jsonData.id);",
+                                                    "}"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"text\": \"What is 2+2?\",\n  \"subjectId\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/questions",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "questions"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Update Question",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "PUT",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"text\": \"What is 2+2 updated?\",\n  \"subjectId\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/questions/{{questionId}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "questions",
+                                                "{{questionId}}"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Delete Question",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "DELETE",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/questions/{{questionId}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "questions",
+                                                "{{questionId}}"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Answers",
+                            "item": [
+                                {
+                                    "name": "List Answers",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/answers",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "answers"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Create Answer",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "var jsonData = pm.response.json();",
+                                                    "if (jsonData.id) {",
+                                                    "    pm.collectionVariables.set(\"answerId\", jsonData.id);",
+                                                    "}"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "POST",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"text\": \"4\",\n  \"isCorrect\": true,\n  \"questionId\": {{questionId}}\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/answers",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "answers"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Update Answer",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "PUT",
+                                        "header": [],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"text\": \"4 updated\",\n  \"isCorrect\": true,\n  \"questionId\": {{questionId}}\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/answers/{{answerId}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "answers",
+                                                "{{answerId}}"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Delete Answer",
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{accessToken}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "DELETE",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/exams/management/answers/{{answerId}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "exams",
+                                                "management",
+                                                "answers",
+                                                "{{answerId}}"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Import Questions (DOCX)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{admin_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": []
+                                        },
+                                        {
+                                            "key": "subjectId",
+                                            "value": "1",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/exams/management/questions/import",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "exams",
+                                        "management",
+                                        "questions",
+                                        "import"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Start Exam Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{applicant_token}}",
+                                "type": "text"
+                            }
                         ],
-                        "type": "text/javascript"
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"phoneNumber\": \"998901234567\",\n  \"otp\": \"123456\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"applicationId\": \"uuid-goes-here\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/exams/sessions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "exams",
+                                "sessions"
+                            ]
                         }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/verify-otp",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "auth", "applicant", "reset", "verify-otp"]
-                    },
-                    "description": "Verify applicant OTP for password reset"
-                  }
+                    }
                 },
                 {
-                  "name": "Complete Reset",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "var jsonData = pm.response.json();",
-                          "if (jsonData.accessToken) {",
-                          "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
-                          "}"
+                    "name": "Get Session Questions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{applicant_token}}",
+                                "type": "text"
+                            }
                         ],
-                        "type": "text/javascript"
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Authorization",
-                        "value": "Bearer {{resetToken}}",
-                        "type": "text"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"password\": \"NewP@ssw0rd123\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/exams/sessions/{{sessionId}}/questions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "exams",
+                                "sessions",
+                                "{{sessionId}}",
+                                "questions"
+                            ]
                         }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/auth/applicant/reset/set-password",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "auth", "applicant", "reset", "set-password"]
-                    },
-                    "description": "Reset applicant password"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Staff",
-          "item": [
-            {
-              "name": "Login",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.accessToken) {",
-                      "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"phoneNumber\": \"998900000001\",\n  \"password\": \"admin-password\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
                     }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/auth/staff/login",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "auth", "staff", "login"]
-                },
-                "description": "Log in admin or moderator with phone number and password"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Refresh Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.accessToken) {",
-                  "    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/refresh",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "refresh"]
-            },
-            "description": "Exchange a valid refresh token for a new access token"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Applications",
-      "item": [
-        {
-          "name": "Submit Application",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.id) {",
-                  "    pm.collectionVariables.set(\"applicationId\", jsonData.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"middlename\": \"Middle\",\n  \"birthDate\": \"2000-01-01\",\n  \"gender\": \"M\",\n  \"jshshir\": \"12345678901234\",\n  \"passportSeries\": \"AA1234567\",\n  \"address\": \"Tashkent, Uzbekistan\",\n  \"additionalPhone\": \"998901234568\",\n  \"disability\": 0,\n  \"tuitionId\": \"{{tuitionId}}\",\n  \"certificates\": []\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications"]
-            },
-            "description": "Submit a new application (Applicant only)"
-          }
-        },
-        {
-          "name": "List Applications",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications?page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications"],
-              "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" },
-                { "key": "status", "value": "PENDING", "disabled": true },
-                { "key": "school_year", "value": "2024", "disabled": true },
-                { "key": "major_id", "value": "1", "disabled": true },
-                { "key": "degree", "value": "BACHELOR", "disabled": true }
-              ]
-            },
-            "description": "List applications with pagination and filters (Staff only)"
-          }
-        },
-        {
-          "name": "Get My Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "me"]
-            },
-            "description": "Get current applicant's application"
-          }
-        },
-        {
-          "name": "Get Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "{{applicationId}}"]
-            },
-            "description": "Get application details by id (Staff only)"
-          }
-        },
-        {
-          "name": "Accept Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}/accept",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "{{applicationId}}", "accept"]
-            },
-            "description": "Accept application (Staff only)"
-          }
-        },
-        {
-          "name": "Reject Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}/reject",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "{{applicationId}}", "reject"]
-            },
-            "description": "Reject application (Staff only)"
-          }
-        },
-        {
-          "name": "Update Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstname\": \"John\",\n  \"lastname\": \"Doe\",\n  \"middlename\": \"Middle\",\n  \"birthDate\": \"2000-01-01\",\n  \"gender\": \"M\",\n  \"jshshir\": \"12345678901234\",\n  \"passportSeries\": \"AA1234567\",\n  \"address\": \"Tashkent, Uzbekistan\",\n  \"additionalPhone\": \"998901234568\",\n  \"disability\": 0,\n  \"tuitionId\": \"{{tuitionId}}\",\n  \"certificates\": []\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "{{applicationId}}"]
-            },
-            "description": "Update application (Admin only)"
-          }
-        },
-        {
-          "name": "Delete Application",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/applications/{{applicationId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "applications", "{{applicationId}}"]
-            },
-            "description": "Delete application (Admin only)"
-          }
-        },
-        {
-          "name": "Settings",
-          "item": [
-            {
-              "name": "Toggle Auto-Accept",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"enabled\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/applications/settings/auto-accept",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "applications", "settings", "auto-accept"]
-                },
-                "description": "Toggle auto-accept for new submissions (Staff only)"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Contracts",
-      "item": [
-        {
-          "name": "List Contracts",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/contracts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "contracts"]
-            },
-            "description": "List all contracts (Admin only)"
-          }
-        },
-        {
-          "name": "Create Contract",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.id) {",
-                  "    pm.collectionVariables.set(\"contractId\", jsonData.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"applicationId\": \"{{applicationId}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/contracts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "contracts"]
-            },
-            "description": "Create a new contract (Admin only)"
-          }
-        },
-        {
-          "name": "Update Contract",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"applicationId\": \"{{applicationId}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/contracts/{{contractId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "contracts", "{{contractId}}"]
-            },
-            "description": "Update contract (Admin only)"
-          }
-        },
-        {
-          "name": "Delete Contract",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/contracts/{{contractId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "contracts", "{{contractId}}"]
-            },
-            "description": "Delete contract (Admin only)"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Exams",
-      "item": [
-        {
-          "name": "List Exams",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/exams",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "exams"]
-            },
-            "description": "List all exams (Admin only)"
-          }
-        },
-        {
-          "name": "Create Exam",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.id) {",
-                  "    pm.collectionVariables.set(\"examId\", jsonData.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"score\": 75.5\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/exams",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "exams"]
-            },
-            "description": "Create a new exam record (Admin only)"
-          }
-        },
-        {
-          "name": "Update Exam",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"score\": 80.0\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "exams", "{{examId}}"]
-            },
-            "description": "Update exam record (Admin only)"
-          }
-        },
-        {
-          "name": "Delete Exam",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/exams/{{examId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "exams", "{{examId}}"]
-            },
-            "description": "Delete exam record (Admin only)"
-          }
-        },
-        {
-          "name": "Management",
-          "item": [
-            {
-              "name": "Questions",
-              "item": [
-                {
-                  "name": "List Questions",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/questions",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "questions"]
-                    }
-                  }
                 },
                 {
-                  "name": "Create Question",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "var jsonData = pm.response.json();",
-                          "if (jsonData.id) {",
-                          "    pm.collectionVariables.set(\"questionId\", jsonData.id);",
-                          "}"
+                    "name": "Complete Exam Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{applicant_token}}",
+                                "type": "text"
+                            }
                         ],
-                        "type": "text/javascript"
-                      }
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"answers\": {\n        \"1\": 2,\n        \"2\": 6\n    }\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/exams/sessions/{{sessionId}}/complete",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "exams",
+                                "sessions",
+                                "{{sessionId}}",
+                                "complete"
+                            ]
+                        }
                     }
-                  ],
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"text\": \"What is 2+2?\",\n  \"subjectId\": 1\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/questions",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "questions"]
-                    }
-                  }
-                },
-                {
-                  "name": "Update Question",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "PUT",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"text\": \"What is 2+2 updated?\",\n  \"subjectId\": 1\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/questions/{{questionId}}",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "questions", "{{questionId}}"]
-                    }
-                  }
-                },
-                {
-                  "name": "Delete Question",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "DELETE",
-                    "header": [],
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/questions/{{questionId}}",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "questions", "{{questionId}}"]
-                    }
-                  }
                 }
-              ]
-            },
-            {
-              "name": "Answers",
-              "item": [
+            ]
+        },
+        {
+            "name": "Files",
+            "item": [
                 {
-                  "name": "List Answers",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
+                    "name": "Upload Certificate",
+                    "event": [
                         {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.collectionVariables.set(\"fileId\", jsonData.fileId);",
+                                    "pm.collectionVariables.set(\"fileUrl\", jsonData.fileUrl);",
+                                    "",
+                                    "try {",
+                                    "    var url = new URL(jsonData.fileUrl);",
+                                    "    var token = url.searchParams.get(\"token\");",
+                                    "    if (token) {",
+                                    "        pm.collectionVariables.set(\"fileToken\", token);",
+                                    "    }",
+                                    "} catch (e) {}"
+                                ],
+                                "type": "text/javascript"
+                            }
                         }
-                      ]
-                    },
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/answers",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "answers"]
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "categoryId",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": ""
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/files/certificates",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "files",
+                                "certificates"
+                            ]
+                        },
+                        "description": "Upload a certificate file (Applicant only)"
                     }
-                  }
                 },
                 {
-                  "name": "Create Answer",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "exec": [
-                          "var jsonData = pm.response.json();",
-                          "if (jsonData.id) {",
-                          "    pm.collectionVariables.set(\"answerId\", jsonData.id);",
-                          "}"
-                        ],
-                        "type": "text/javascript"
-                      }
+                    "name": "Download Certificate",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/files/certificates/{{fileId}}?token={{fileToken}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "files",
+                                "certificates",
+                                "{{fileId}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "token",
+                                    "value": "{{fileToken}}"
+                                }
+                            ]
+                        },
+                        "description": "Download certificate file by ID"
                     }
-                  ],
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"text\": \"4\",\n  \"isCorrect\": true,\n  \"questionId\": {{questionId}}\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/answers",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "answers"]
-                    }
-                  }
-                },
-                {
-                  "name": "Update Answer",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "PUT",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"text\": \"4 updated\",\n  \"isCorrect\": true,\n  \"questionId\": {{questionId}}\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/answers/{{answerId}}",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "answers", "{{answerId}}"]
-                    }
-                  }
-                },
-                {
-                  "name": "Delete Answer",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "{{accessToken}}",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "DELETE",
-                    "header": [],
-                    "url": {
-                      "raw": "{{baseUrl}}/api/v1/exams/management/answers/{{answerId}}",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "exams", "management", "answers", "{{answerId}}"]
-                    }
-                  }
                 }
-              ]
-            }
-          ]
+            ]
+        },
+        {
+            "name": "Reference Data",
+            "item": [
+                {
+                    "name": "Majors",
+                    "item": [
+                        {
+                            "name": "List Majors",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/majors",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "majors"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Major",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"majorId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Computer Science\",\n  \"code\": \"CS101\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/majors",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "majors"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Major",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Computer Science Updated\",\n  \"code\": \"CS101\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/majors/{{majorId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "majors",
+                                        "{{majorId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Major",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/majors/{{majorId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "majors",
+                                        "{{majorId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Major Types",
+                    "item": [
+                        {
+                            "name": "List Major Types",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-types",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-types"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Major Type",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"majorTypeId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Full-time\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-types",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-types"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Major Type",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Full-time Updated\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-types/{{majorTypeId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-types",
+                                        "{{majorTypeId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Major Type",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-types/{{majorTypeId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-types",
+                                        "{{majorTypeId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Major Languages",
+                    "item": [
+                        {
+                            "name": "List Major Languages",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-langs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-langs"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Major Lang",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"majorLangId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"English\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-langs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-langs"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Major Lang",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"English Updated\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-langs/{{majorLangId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-langs",
+                                        "{{majorLangId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Major Lang",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/major-langs/{{majorLangId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "major-langs",
+                                        "{{majorLangId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "School Years",
+                    "item": [
+                        {
+                            "name": "List School Years",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/school-years",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "school-years"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create School Year",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"schoolYearId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"year\": 2026,\n  \"isCurrent\": true\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/school-years",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "school-years"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update School Year",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"year\": 2026,\n  \"isCurrent\": false\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/school-years/{{schoolYearId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "school-years",
+                                        "{{schoolYearId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete School Year",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/school-years/{{schoolYearId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "school-years",
+                                        "{{schoolYearId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Subjects",
+                    "item": [
+                        {
+                            "name": "List Subjects",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/subjects",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "subjects"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Subject",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"subjectId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Mathematics\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/subjects",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "subjects"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Subject",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Mathematics Updated\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/subjects/{{subjectId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "subjects",
+                                        "{{subjectId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Subject",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/subjects/{{subjectId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "subjects",
+                                        "{{subjectId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Cert Categories",
+                    "item": [
+                        {
+                            "name": "List Cert Categories",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/cert-categories",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "cert-categories"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Cert Category",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "var jsonData = pm.response.json();",
+                                            "if (jsonData.id) {",
+                                            "    pm.collectionVariables.set(\"certCategoryId\", jsonData.id);",
+                                            "}"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Language Proficiency\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/cert-categories",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "cert-categories"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Cert Category",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Language Proficiency Updated\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/cert-categories/{{certCategoryId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "cert-categories",
+                                        "{{certCategoryId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Cert Category",
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{accessToken}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/reference/cert-categories/{{certCategoryId}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "reference",
+                                        "cert-categories",
+                                        "{{certCategoryId}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tuition",
+            "item": [
+                {
+                    "name": "List Tuitions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/tuitions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "tuitions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Tuition",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.id) {",
+                                    "    pm.collectionVariables.set(\"tuitionId\", jsonData.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"majorId\": 1,\n  \"majorTypeId\": 1,\n  \"majorLangId\": 1,\n  \"schoolYearId\": 1,\n  \"amount\": 10000000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/tuitions",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "tuitions"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Tuition",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"majorId\": 1,\n  \"majorTypeId\": 1,\n  \"majorLangId\": 1,\n  \"schoolYearId\": 1,\n  \"amount\": 12000000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/tuitions/{{tuitionId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "tuitions",
+                                "{{tuitionId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Tuition",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/tuitions/{{tuitionId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "tuitions",
+                                "{{tuitionId}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "List Applicants",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/applicants?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "applicants"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Moderator",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.id) {",
+                                    "    pm.collectionVariables.set(\"userId\", jsonData.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"mod1\",\n  \"password\": \"password\",\n  \"lang\": \"UZ\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/moderators",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "moderators"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "users",
+                                "{{userId}}"
+                            ]
+                        }
+                    }
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "Files",
-      "item": [
+    ],
+    "variable": [
         {
-          "name": "Upload Certificate",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "pm.collectionVariables.set(\"fileId\", jsonData.fileId);",
-                  "pm.collectionVariables.set(\"fileUrl\", jsonData.fileUrl);",
-                  "",
-                  "try {",
-                  "    var url = new URL(jsonData.fileUrl);",
-                  "    var token = url.searchParams.get(\"token\");",
-                  "    if (token) {",
-                  "        pm.collectionVariables.set(\"fileToken\", token);",
-                  "    }",
-                  "} catch (e) {}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                { "key": "categoryId", "value": "1", "type": "text" },
-                { "key": "file", "type": "file", "src": "" }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/files/certificates",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "files", "certificates"]
-            },
-            "description": "Upload a certificate file (Applicant only)"
-          }
+            "key": "baseUrl",
+            "value": "http://localhost:8080",
+            "type": "string"
         },
         {
-          "name": "Download Certificate",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/files/certificates/{{fileId}}?token={{fileToken}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "files", "certificates", "{{fileId}}"],
-              "query": [
-                { "key": "token", "value": "{{fileToken}}" }
-              ]
-            },
-            "description": "Download certificate file by ID"
-          }
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refreshToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "verificationToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "resetToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "applicationId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "contractId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "examId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "questionId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "answerId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "fileId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "fileUrl",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "fileToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "majorId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "majorTypeId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "majorLangId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "schoolYearId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "subjectId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "certCategoryId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "tuitionId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
         }
-      ]
-    },
-    {
-      "name": "Reference Data",
-      "item": [
-        {
-          "name": "Majors",
-          "item": [
-            {
-              "name": "List Majors",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/majors",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "majors"]
-                }
-              }
-            },
-            {
-              "name": "Create Major",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"majorId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Computer Science\",\n  \"code\": \"CS101\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/majors",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "majors"]
-                }
-              }
-            },
-            {
-              "name": "Update Major",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Computer Science Updated\",\n  \"code\": \"CS101\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/majors/{{majorId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "majors", "{{majorId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Major",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/majors/{{majorId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "majors", "{{majorId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Major Types",
-          "item": [
-            {
-              "name": "List Major Types",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-types",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-types"]
-                }
-              }
-            },
-            {
-              "name": "Create Major Type",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"majorTypeId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Full-time\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-types",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-types"]
-                }
-              }
-            },
-            {
-              "name": "Update Major Type",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Full-time Updated\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-types/{{majorTypeId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-types", "{{majorTypeId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Major Type",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-types/{{majorTypeId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-types", "{{majorTypeId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Major Languages",
-          "item": [
-            {
-              "name": "List Major Languages",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-langs",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-langs"]
-                }
-              }
-            },
-            {
-              "name": "Create Major Lang",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"majorLangId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"English\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-langs",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-langs"]
-                }
-              }
-            },
-            {
-              "name": "Update Major Lang",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"English Updated\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-langs/{{majorLangId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-langs", "{{majorLangId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Major Lang",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/major-langs/{{majorLangId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "major-langs", "{{majorLangId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "School Years",
-          "item": [
-            {
-              "name": "List School Years",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/school-years",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "school-years"]
-                }
-              }
-            },
-            {
-              "name": "Create School Year",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"schoolYearId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"year\": 2026,\n  \"isCurrent\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/school-years",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "school-years"]
-                }
-              }
-            },
-            {
-              "name": "Update School Year",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"year\": 2026,\n  \"isCurrent\": false\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/school-years/{{schoolYearId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "school-years", "{{schoolYearId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete School Year",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/school-years/{{schoolYearId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "school-years", "{{schoolYearId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Subjects",
-          "item": [
-            {
-              "name": "List Subjects",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/subjects",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "subjects"]
-                }
-              }
-            },
-            {
-              "name": "Create Subject",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"subjectId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Mathematics\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/subjects",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "subjects"]
-                }
-              }
-            },
-            {
-              "name": "Update Subject",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Mathematics Updated\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/subjects/{{subjectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "subjects", "{{subjectId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Subject",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/subjects/{{subjectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "subjects", "{{subjectId}}"]
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Cert Categories",
-          "item": [
-            {
-              "name": "List Cert Categories",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/cert-categories",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "cert-categories"]
-                }
-              }
-            },
-            {
-              "name": "Create Cert Category",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var jsonData = pm.response.json();",
-                      "if (jsonData.id) {",
-                      "    pm.collectionVariables.set(\"certCategoryId\", jsonData.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Language Proficiency\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/cert-categories",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "cert-categories"]
-                }
-              }
-            },
-            {
-              "name": "Update Cert Category",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Language Proficiency Updated\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/cert-categories/{{certCategoryId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "cert-categories", "{{certCategoryId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Cert Category",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/reference/cert-categories/{{certCategoryId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "reference", "cert-categories", "{{certCategoryId}}"]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Tuition",
-      "item": [
-        {
-          "name": "List Tuitions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tuitions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tuitions"]
-            }
-          }
-        },
-        {
-          "name": "Create Tuition",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.id) {",
-                  "    pm.collectionVariables.set(\"tuitionId\", jsonData.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"majorId\": 1,\n  \"majorTypeId\": 1,\n  \"majorLangId\": 1,\n  \"schoolYearId\": 1,\n  \"amount\": 10000000\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/tuitions",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "tuitions"]
-                }
-              }
-            },
-            {
-              "name": "Update Tuition",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"majorId\": 1,\n  \"majorTypeId\": 1,\n  \"majorLangId\": 1,\n  \"schoolYearId\": 1,\n  \"amount\": 12000000\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/tuitions/{{tuitionId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "tuitions", "{{tuitionId}}"]
-                }
-              }
-            },
-            {
-              "name": "Delete Tuition",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{accessToken}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/tuitions/{{tuitionId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "tuitions", "{{tuitionId}}"]
-                }
-              }
-            }
-      ]
-    },
-    {
-      "name": "Users",
-      "item": [
-        {
-          "name": "List Applicants",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/users/applicants?page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "applicants"],
-              "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Moderator",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData.id) {",
-                  "    pm.collectionVariables.set(\"userId\", jsonData.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"mod1\",\n  \"password\": \"password\",\n  \"lang\": \"UZ\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/users/moderators",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "moderators"]
-            }
-          }
-        },
-        {
-          "name": "Delete User",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "{{userId}}"]
-            }
-          }
-        }
-      ]
-    }
-  ],
-  "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
-    { "key": "accessToken", "value": "", "type": "string" },
-    { "key": "refreshToken", "value": "", "type": "string" },
-    { "key": "verificationToken", "value": "", "type": "string" },
-    { "key": "resetToken", "value": "", "type": "string" },
-    { "key": "applicationId", "value": "", "type": "string" },
-    { "key": "contractId", "value": "", "type": "string" },
-    { "key": "examId", "value": "", "type": "string" },
-    { "key": "questionId", "value": "", "type": "string" },
-    { "key": "answerId", "value": "", "type": "string" },
-    { "key": "fileId", "value": "", "type": "string" },
-    { "key": "fileUrl", "value": "", "type": "string" },
-    { "key": "fileToken", "value": "", "type": "string" },
-    { "key": "majorId", "value": "", "type": "string" },
-    { "key": "majorTypeId", "value": "", "type": "string" },
-    { "key": "majorLangId", "value": "", "type": "string" },
-    { "key": "schoolYearId", "value": "", "type": "string" },
-    { "key": "subjectId", "value": "", "type": "string" },
-    { "key": "certCategoryId", "value": "", "type": "string" },
-    { "key": "tuitionId", "value": "", "type": "string" },
-    { "key": "userId", "value": "", "type": "string" }
-  ]
+    ]
 }

@@ -14,9 +14,9 @@ class CertificateFileIntegrationTest extends ApplicationIntegrationTestSupport {
 
     @Test
     void applicantCanUploadAndDownloadOwnCertificateFile() throws Exception {
-        String fileUrl = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
+        String fileId = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
 
-        mockMvc.perform(get(fileUrl)
+        mockMvc.perform(get("/api/v1/files/certificates/" + fileId)
                         .header("Authorization", "Bearer " + accessToken(applicant)))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", "application/pdf"));
@@ -43,19 +43,19 @@ class CertificateFileIntegrationTest extends ApplicationIntegrationTestSupport {
 
     @Test
     void nonOwnerApplicantCannotDownloadCertificateFile() throws Exception {
-        String fileUrl = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
+        String fileId = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
         User anotherApplicant = createUser("998901009999", Role.APPLICANT);
 
-        mockMvc.perform(get(fileUrl)
+        mockMvc.perform(get("/api/v1/files/certificates/" + fileId)
                         .header("Authorization", "Bearer " + accessToken(anotherApplicant)))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void moderatorCanDownloadApplicantCertificateFile() throws Exception {
-        String fileUrl = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
+        String fileId = uploadFile(applicant, "cert.pdf", "application/pdf", "pdf-content".getBytes());
 
-        mockMvc.perform(get(fileUrl)
+        mockMvc.perform(get("/api/v1/files/certificates/" + fileId)
                         .header("Authorization", "Bearer " + accessToken(moderator)))
                 .andExpect(status().isOk());
     }
@@ -69,10 +69,10 @@ class CertificateFileIntegrationTest extends ApplicationIntegrationTestSupport {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        String marker = "\"fileUrl\":\"";
+        String marker = "\"fileId\":\"";
         int start = response.indexOf(marker);
         if (start < 0) {
-            throw new IllegalStateException("fileUrl not found in upload response");
+            throw new IllegalStateException("fileId not found in upload response");
         }
         int valueStart = start + marker.length();
         int end = response.indexOf('"', valueStart);

@@ -14,11 +14,7 @@ import uz.umft.qabul.entity.CertificateFile;
 import uz.umft.qabul.entity.User;
 import uz.umft.qabul.enums.Lang;
 import uz.umft.qabul.enums.Role;
-import uz.umft.qabul.repository.CertCategoryRepository;
-import uz.umft.qabul.repository.CertificateFileRepository;
-import uz.umft.qabul.repository.OtpChallengeRepository;
-import uz.umft.qabul.repository.SessionRepository;
-import uz.umft.qabul.repository.UserRepository;
+import uz.umft.qabul.repository.*;
 import uz.umft.qabul.service.JwtService;
 
 import java.io.IOException;
@@ -84,7 +80,7 @@ public abstract class ApplicationIntegrationTestSupport {
     }
 
     protected MockHttpServletRequestBuilder submitApplicationRequest(User user) {
-        String certificateFileUrl = createUploadedCertificateFileUrl(user, 1);
+        String certificateFileId = createUploadedCertificateFileId(user, 1);
         return post("/api/v1/applications")
                 .header("Authorization", "Bearer " + accessToken(user))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,12 +101,12 @@ public abstract class ApplicationIntegrationTestSupport {
                             {
                               "certNumber":"NAT-2026-0001",
                               "score":78.5,
-                              "fileUrl":"%s",
+                              "fileId":"%s",
                               "categoryId":1
                             }
                           ]
                         }
-                        """.formatted(certificateFileUrl));
+                        """.formatted(certificateFileId));
     }
 
     protected User createUser(String phoneNumber, Role role) {
@@ -126,20 +122,29 @@ public abstract class ApplicationIntegrationTestSupport {
         clearStorageDirectory();
         sessionRepository.deleteAll();
         otpChallengeRepository.deleteAll();
-        jdbcTemplate.execute("delete from certificate_files");
-        jdbcTemplate.execute("delete from certs");
-        jdbcTemplate.execute("delete from applications");
-        jdbcTemplate.execute("delete from application_settings");
-        jdbcTemplate.execute("delete from tuition");
-        jdbcTemplate.execute("delete from cert_category");
-        jdbcTemplate.execute("delete from school_year");
-        jdbcTemplate.execute("delete from major");
-        jdbcTemplate.execute("delete from major_type");
-        jdbcTemplate.execute("delete from major_lang");
+        jdbcTemplate.execute("truncate table tuition cascade");
+        jdbcTemplate.execute("truncate table school_year cascade");
+        jdbcTemplate.execute("truncate table major cascade");
+        jdbcTemplate.execute("truncate table major_type cascade");
+        jdbcTemplate.execute("truncate table major_lang cascade");
+        jdbcTemplate.execute("truncate table exam_questions cascade");
+        jdbcTemplate.execute("truncate table contracts cascade");
+        jdbcTemplate.execute("truncate table exam_session_answers cascade");
+        jdbcTemplate.execute("truncate table exam_sessions cascade");
+        jdbcTemplate.execute("truncate table exam_subjects cascade");
+        jdbcTemplate.execute("truncate table exam_answers cascade");
+        jdbcTemplate.execute("truncate table exams cascade");
+        jdbcTemplate.execute("truncate table certificate_files cascade");
+        jdbcTemplate.execute("truncate table certs cascade");
+        jdbcTemplate.execute("truncate table bachelor_certs cascade");
+        jdbcTemplate.execute("truncate table applications cascade");
+        jdbcTemplate.execute("truncate table application_settings cascade");
+        jdbcTemplate.execute("truncate table subjects cascade");
+        jdbcTemplate.execute("truncate table cert_category cascade");
         userRepository.deleteAll();
     }
 
-    protected String createUploadedCertificateFileUrl(User owner, Integer categoryId) {
+    protected String createUploadedCertificateFileId(User owner, Integer categoryId) {
         UUID fileId = UUID.randomUUID();
         String relativePath = "certificates/test-" + categoryId + "/" + owner.getId() + "/" + fileId + ".pdf";
         Path absolutePath = Path.of(fileProperties.baseDir()).toAbsolutePath().normalize().resolve(relativePath).normalize();
@@ -161,7 +166,7 @@ public abstract class ApplicationIntegrationTestSupport {
         certificateFile.setSizeBytes(absolutePath.toFile().length());
         certificateFileRepository.save(certificateFile);
 
-        return "/api/v1/files/certificates/" + fileId;
+        return fileId.toString();
     }
 
     private void clearStorageDirectory() {
@@ -189,6 +194,7 @@ public abstract class ApplicationIntegrationTestSupport {
         jdbcTemplate.update("insert into major_type(id, type) values (1, 'Kunduzgi')");
         jdbcTemplate.update("insert into major_lang(id, lang) values (1, 'UZ')");
         jdbcTemplate.update("insert into cert_category(id, title, type) values (1, 'National cert', 'NATIONAL')");
+        jdbcTemplate.update("insert into subjects(id, title) values (1, 'Mathematics')");
         jdbcTemplate.update("""
                 insert into tuition(id, school_year, major_id, major_type_id, major_lang_id, degree, amount)
                 values (?, 2026, 1, 1, 1, 'BACHELOR', 18000000)

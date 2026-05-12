@@ -1,25 +1,27 @@
-package uz.umft.qabul.service;
+package uz.umft.qabul.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.jdbc.core.JdbcTemplate;
 import uz.umft.qabul.entity.User;
 import uz.umft.qabul.enums.Lang;
 import uz.umft.qabul.enums.Role;
 import uz.umft.qabul.repository.OtpChallengeRepository;
 import uz.umft.qabul.repository.SessionRepository;
 import uz.umft.qabul.repository.UserRepository;
+import uz.umft.qabul.service.AdminBootstrapService;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,7 +53,7 @@ class StaffLoginIntegrationTest {
     void setUp() {
         sessionRepository.deleteAll();
         otpChallengeRepository.deleteAll();
-        jdbcTemplate.execute("delete from certs");
+        jdbcTemplate.execute("truncate table certs");
         jdbcTemplate.execute("delete from applications");
         jdbcTemplate.execute("delete from application_settings");
         jdbcTemplate.execute("delete from certificate_files");

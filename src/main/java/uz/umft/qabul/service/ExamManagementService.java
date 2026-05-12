@@ -101,4 +101,52 @@ public class ExamManagementService {
             a.setQuestion(questionRepository.findById(dto.getQuestionId()).orElseThrow());
         }
     }
+
+    @Transactional
+    public uz.umft.qabul.dto.exam.ImportSummaryDto importQuestionsFromDocx(org.springframework.web.multipart.MultipartFile file, Integer subjectId) {
+        uz.umft.qabul.entity.Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new IllegalArgumentException("Subject not found"));
+
+        int questionsImported = 0;
+        try (org.apache.poi.xwpf.usermodel.XWPFDocument doc = new org.apache.poi.xwpf.usermodel.XWPFDocument(file.getInputStream())) {
+            List<String> lines = doc.getParagraphs().stream()
+                    .map(org.apache.poi.xwpf.usermodel.XWPFParagraph::getText)
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toList();
+
+            for (int i = 0; i <= lines.size() - 5; i += 5) {
+                String qText = lines.get(i);
+                String ansA = lines.get(i + 1);
+                String ansB = lines.get(i + 2);
+                String ansC = lines.get(i + 3);
+                String ansD = lines.get(i + 4);
+
+                ExamQuestion question = new ExamQuestion();
+                question.setQuestionText(qText);
+                question.setSubject(subject);
+                question.setPoint(1.0); // Default point
+                question = questionRepository.save(question);
+
+                saveAnswer(question, ansA, true);
+                saveAnswer(question, ansB, false);
+                saveAnswer(question, ansC, false);
+                saveAnswer(question, ansD, false);
+
+                questionsImported++;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse DOCX file", e);
+        }
+
+        return new uz.umft.qabul.dto.exam.ImportSummaryDto(questionsImported);
+    }
+
+    private void saveAnswer(ExamQuestion question, String text, boolean isCorrect) {
+        ExamAnswer answer = new ExamAnswer();
+        answer.setQuestion(question);
+        answer.setAnswerText(text);
+        answer.setIsCorrect(isCorrect);
+        answerRepository.save(answer);
+    }
 }

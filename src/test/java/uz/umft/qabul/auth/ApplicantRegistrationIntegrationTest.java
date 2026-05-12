@@ -1,22 +1,24 @@
-package uz.umft.qabul.service;
+package uz.umft.qabul.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uz.umft.qabul.entity.OtpChallenge;
+import uz.umft.qabul.enums.OtpChallengeStatus;
 import uz.umft.qabul.repository.OtpChallengeRepository;
 import uz.umft.qabul.repository.SessionRepository;
 import uz.umft.qabul.repository.UserRepository;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,10 +44,10 @@ class ApplicantRegistrationIntegrationTest {
     void setUp() {
         sessionRepository.deleteAll();
         otpChallengeRepository.deleteAll();
-        jdbcTemplate.execute("delete from certs");
-        jdbcTemplate.execute("delete from applications");
-        jdbcTemplate.execute("delete from application_settings");
-        jdbcTemplate.execute("delete from certificate_files");
+        jdbcTemplate.execute("truncate table certs cascade ");
+        jdbcTemplate.execute("truncate table applications cascade ");
+        jdbcTemplate.execute("truncate table application_settings cascade ");
+        jdbcTemplate.execute("truncate table certificate_files cascade ");
         userRepository.deleteAll();
     }
 
@@ -103,7 +105,7 @@ class ApplicantRegistrationIntegrationTest {
 
     private String latestOtp(String phoneNumber) {
         OtpChallenge challenge = otpChallengeRepository
-                .findFirstByPhoneNumberAndStatusOrderByCreatedAtDesc(phoneNumber, uz.umft.qabul.enums.OtpChallengeStatus.ACTIVE)
+                .findFirstByPhoneNumberAndStatusOrderByCreatedAtDesc(phoneNumber, OtpChallengeStatus.ACTIVE)
                 .orElseThrow();
         return challenge.getOtpHash();
     }

@@ -25,9 +25,10 @@ public class Contract {
     private String contractUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id")
-    private Exam exam;
+    @JoinColumn(name = "exam_session_id", nullable = false, unique = true)
+    private ExamSession examSession;
 
+    @Column(nullable = false)
     private Double scale;
 
     @CreationTimestamp(source = SourceType.VM)
